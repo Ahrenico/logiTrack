@@ -1,35 +1,18 @@
 package com.logitrack.sistema_logistica.config;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.logitrack.sistema_logistica.model.Camion;
-import com.logitrack.sistema_logistica.model.Chofer_Detalle;
-import com.logitrack.sistema_logistica.model.Empresa_Cliente;
-import com.logitrack.sistema_logistica.model.Envio;
-import com.logitrack.sistema_logistica.model.Establecimiento;
-import com.logitrack.sistema_logistica.model.Historial_Estados;
-import com.logitrack.sistema_logistica.model.Persona;
-import com.logitrack.sistema_logistica.model.Usuario;
-import com.logitrack.sistema_logistica.model.enums.Estado_Envio;
 import com.logitrack.sistema_logistica.model.enums.Rol_Usuario;
 import com.logitrack.sistema_logistica.model.enums.Tipo_Empresa;
 import com.logitrack.sistema_logistica.model.enums.Tipo_Grano;
-import com.logitrack.sistema_logistica.repository.CamionRepository;
-import com.logitrack.sistema_logistica.repository.Chofer_DetalleRepository;
-import com.logitrack.sistema_logistica.repository.Empresa_ClienteRepository;
-import com.logitrack.sistema_logistica.repository.EnvioRepository;
-import com.logitrack.sistema_logistica.repository.EstablecimientoRepository;
-import com.logitrack.sistema_logistica.repository.Historial_EstadosRepository;
-import com.logitrack.sistema_logistica.repository.PersonaRepository;
-import com.logitrack.sistema_logistica.repository.UsuarioRepository;
-
+import com.logitrack.sistema_logistica.model.enums.Estado_Envio;
+import com.logitrack.sistema_logistica.model.*;
+import com.logitrack.sistema_logistica.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDate;
+import java.util.Arrays;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Component
 public class DataSeed implements CommandLineRunner {
@@ -50,6 +33,7 @@ public class DataSeed implements CommandLineRunner {
     private EnvioRepository envioRepository;
     @Autowired
     private Historial_EstadosRepository historialEstadosRepository;
+        
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -69,7 +53,7 @@ public class DataSeed implements CommandLineRunner {
     protected void cargarDatosSemilla() {
         try {
             // 1. Usuarios
-            Usuario admin = Usuario.builder().username("supervisor1").password_hash(passwordEncoder.encode("123456")).rol(Rol_Usuario.SUPERVISOR).activo(true).build();
+           Usuario admin = Usuario.builder().username("supervisor1").password_hash(passwordEncoder.encode("123456")).rol(Rol_Usuario.SUPERVISOR).activo(true).build();
             Usuario op = Usuario.builder().username("operador1").password_hash(passwordEncoder.encode("123456")).rol(Rol_Usuario.OPERADOR).activo(true).build();
             Usuario chofer1 = Usuario.builder().username("chofer1").password_hash(passwordEncoder.encode("123456")).rol(Rol_Usuario.CHOFER).activo(true).build();
             Usuario chofer2 = Usuario.builder().username("chofer2").password_hash(passwordEncoder.encode("123456")).rol(Rol_Usuario.CHOFER).activo(true).build();
