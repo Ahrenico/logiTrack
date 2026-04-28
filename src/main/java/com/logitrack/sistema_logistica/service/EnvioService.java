@@ -17,4 +17,10 @@ public class EnvioService {
     public List<Envio> obtenerTodos() {
         return envioRepository.findAll();
     }
+
+    //que pasa si el envío existe o si no se encuentra.
+    public Envio buscarPorTracking(String trackingCtg) {
+        return envioRepository.buscarPorTracking(trackingCtg)
+            .orElseThrow(() -> new RuntimeException("No se encontró el envío con el Tracking ID: " + trackingCtg));
+}
 }
