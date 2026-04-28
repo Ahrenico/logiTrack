@@ -7,10 +7,12 @@ import com.logitrack.sistema_logistica.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 @Service
 public class EnvioService {
 
+    @Autowired private Historial_EstadosRepository historialRepository;
     @Autowired private EnvioRepository envioRepository;
     @Autowired private EstablecimientoRepository establecimientoRepository;
     @Autowired private Chofer_DetalleRepository choferDetalleRepository;
@@ -72,5 +74,9 @@ public class EnvioService {
     public Envio buscarPorTracking(String trackingCtg) {
         return envioRepository.buscarPorTracking(trackingCtg)
             .orElseThrow(() -> new RuntimeException("No se encontró el envío con el Tracking ID: " + trackingCtg));
+    }
+
+    public List<Historial_Estados> obtenerHistorialPorEnvio(String idEnvio) {
+    return historialRepository.buscarHistorialPorEnvio(idEnvio);
 }
 }
