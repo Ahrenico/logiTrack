@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <title>Historial de Cambios</title>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <header>
+
+        <nav class="navbar py-6 text-bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand text-light" href="#">
+                    <img src="../img/logo-logitrack.webp" alt="Logo" width="80" height="60"
+                        class="d-inline-block align-text-top">
+                </a>
+        
+                <div class="d-flex align-items-center gap-3">
+                    <span class="text-light" id="nombreUsuario"></span>
+                    <button class="btn btn-primary fs-6" id="btnCerrarSesion">Cerrar sesión</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="d-flex flex-grow-1 justify-content-center py-5">
+        <div class="col-11 col-sm-10 col-md-9 col-lg-8 col-xl-7">
+
+            <!-- Volver al inicio -->
+            <a href="./menu.html" class="text-decoration-none text-dark mb-4 d-inline-flex align-items-center gap-1">
+                <i class="bi bi-arrow-left"></i> Volver al Inicio
+            </a>
+
+            <!-- Sección de Historial de Cambios -->
+            <div>
+                <h6 class="fw-semibold mb-3">Historial de Cambios</h6>
+
+                <!-- Estado vacío -->
+                <div class="card rounded-4 border-1 p-5 text-center d-none" id="emptyState">
+                    <i class="bi bi-box-seam fs-1 text-muted mb-3"></i>
+                    <p class="text-muted mb-0">No se encuentran cambios en los envíos.</p>
+                </div>
+
+                <!-- Tabla de resultados (se muestra cuando hay resultados) -->
+                <div class="card rounded-4 border-1" id="resultsTable">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4 py-3 fw-semibold small">ID</th>
+                                    <th class="py-3 fw-semibold small">ID Envío</th>
+                                    <th class="py-3 fw-semibold small">Cambio</th>
+                                    <th class="py-3 fw-semibold small">Fecha</th>
+                                    <th class="py-3 fw-semibold small">Hora</th>
+                                    <th class="py-3 fw-semibold small">Responsable</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyHistorial">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sin resultados -->
+                <!-- <div class="card rounded-4 border-1 p-5 text-center d-none" id="noResultsTable">
+                    <i class="bi bi-inbox fs-1 text-muted mb-3"></i>
+                    <p class="text-muted mb-0">No se encuentran cambios en los envíos.</p>
+                </div> -->
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-top mt-auto bg-dark">
+        <p class="text-center my-4 text-light">© 2026 Sistema Federal de Gestión de Logística y Distribución. Todos los
+            derechos reservados</p>
+    </footer>
+
+   <script src="../js/mostrarHistorial.js ""></script>
+     <script src="../js/sesion.js"></script>
+</body>
+
+</html>
