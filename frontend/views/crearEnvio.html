@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/pristinejs@0.1.9/dist/pristine.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <title>Crear Envío</title>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <header>
+
+        <nav class="navbar py-6 text-bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand text-light" href="#">
+                    <img src="../img/logo-logitrack.webp" alt="Logo" width="80" height="60"
+                        class="d-inline-block align-text-top">
+                </a>
+        
+                <div class="d-flex align-items-center gap-3">
+                    <span class="text-light" id="nombreUsuario"></span>
+                    <button class="btn btn-primary fs-6" id="btnCerrarSesion">Cerrar sesión</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="d-flex flex-grow-1 justify-content-center py-5">
+        <div class="col-11 col-sm-10 col-md-8 col-lg-7 col-xl-6">
+
+            <a href="./menu.html" class="text-decoration-none text-dark mb-4 d-inline-flex align-items-center gap-1">
+                <i class="bi bi-arrow-left"></i> Volver al Inicio
+            </a>
+
+
+            <div class="card rounded-4 border-1 p-4">
+
+                <!-- Encabezado -->
+                <h5 class="fw-bold mb-1">Crear Nuevo Envío</h5>
+                <p class="text-muted small mb-4">Completa el formulario para registrar un nuevo paquete</p>
+
+                <form>
+
+                    <!-- Información del Remitente -->
+                    <h6 class="fw-semibold mb-3">Información del Remitente</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small">Nombre <span class="text-danger">*</span></label>
+                            <input type="text" id="remitenteNombre" class="form-control" placeholder="Felipe González">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small">Email</label>
+                            <input type="email" id="remitenteEmail" class="form-control" placeholder="felipe@example.com">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small">Teléfono</label>
+                            <input type="tel" id="remitenteTelefono" class="form-control" placeholder="11 1234 5678">
+                        </div>
+                    </div>
+
+                    <!-- Información del Destinatario -->
+                    <h6 class="fw-semibold mb-3">Información del Destinatario</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small">Nombre <span class="text-danger">*</span></label>
+                            <input type="text" id="destinatarioNombre" class="form-control" placeholder="Emilia Rodríguez">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small">Email</label>
+                            <input type="email" id="destinatarioEmail" class="form-control" placeholder="emilia@example.com">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small">Teléfono</label>
+                            <input type="tel" id="destinatarioTelefono" class="form-control" placeholder="11 1234 5678">
+                        </div>
+                    </div>
+
+                    <!-- Dirección de Entrega -->
+                    <h6 class="fw-semibold mb-3">Dirección de Entrega</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label class="form-label small">Dirección <span class="text-danger">*</span></label>
+                            <input type="text" id="direccion" class="form-control" placeholder="Av. Corrientes 1234, Departamento 6A">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small">Ciudad <span class="text-danger">*</span></label>
+                            <input type="text" id="ciudad" class="form-control" placeholder="Buenos Aires">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small">Código Postal</label>
+                            <input type="text" id="codigoPostal" class="form-control" placeholder="1015">
+                        </div>
+                    </div>
+
+                    <!-- Dimensiones y Peso -->
+                    <h6 class="fw-semibold mb-3">Dimensiones y Peso</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-6 col-md-3">
+                            <label class="form-label small">Peso (kg) <span class="text-danger">*</span></label>
+                            <input type="number" id="peso" class="form-control" placeholder="2.5" step="0.1">
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <label class="form-label small">Largo (cm)</label>
+                            <input type="number" id="largo" class="form-control" placeholder="30" step="0.1">
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <label class="form-label small">Ancho (cm)</label>
+                            <input type="number" id="ancho" class="form-control" placeholder="20" step="0.1">
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <label class="form-label small">Alto (cm)</label>
+                            <input type="number" id="alto" class="form-control" placeholder="15" step="0.1">
+                        </div>
+                    </div>
+
+                    <!-- Información Adicional -->
+                    <h6 class="fw-semibold mb-3">Información Adicional</h6>
+
+                    <div class="col-12 col-md-6 mb-3">
+                        <label class="form-label small">Tipo</label>
+                        <select class="form-select">
+                            <option selected>Normal</option>
+                            <option>Express</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6 mb-3">
+                        <label class="form-label small d-block">Restricciones</label>
+                        <div class="d-flex gap-4 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkFrio">
+                                <label class="form-check-label small" for="checkFrio">Frío</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkFragil">
+                                <label class="form-check-label small" for="checkFragil">Frágil</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label class="form-label small">Notas</label>
+                            <textarea class="form-control" rows="3"
+                                placeholder="Agregar notas adicionales sobre el envío..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                        <label class="form-check-label" for="flexCheckChecked">
+                            Acepta el tratamiento de mis datos según la Ley 25.326
+                        </label>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="./menu.html" class="btn btn-outline-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary" id="btnCrearEnvio" disabled>Crear Envío</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </main>
+
+
+
+    <footer class="border-top mt-auto bg-dark">
+        <p class="text-center my-4 text-light">© 2026 Sistema Federal de Gestión de Logística y Distribución. Todos los
+            derechos reservados</p>
+    </footer>
+    <script src="../js/validarEnvio.js"></script>
+    <script src="../js/crearRegistro.js"></script>
+    <script src="../js/crearEnvio.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/sesion.js"></script>
+
+
+</body>
+
+</html>
