@@ -9,26 +9,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.logitrack.sistema_logistica.model.Camion;
-import com.logitrack.sistema_logistica.model.Chofer_Detalle;
-import com.logitrack.sistema_logistica.model.Empresa_Cliente;
-import com.logitrack.sistema_logistica.model.Envio;
-import com.logitrack.sistema_logistica.model.Establecimiento;
-import com.logitrack.sistema_logistica.model.Historial_Estados;
-import com.logitrack.sistema_logistica.model.Persona;
-import com.logitrack.sistema_logistica.model.Usuario;
+
 import com.logitrack.sistema_logistica.model.enums.Estado_Envio;
 import com.logitrack.sistema_logistica.model.enums.Rol_Usuario;
 import com.logitrack.sistema_logistica.model.enums.Tipo_Empresa;
 import com.logitrack.sistema_logistica.model.enums.Tipo_Grano;
-import com.logitrack.sistema_logistica.repository.CamionRepository;
-import com.logitrack.sistema_logistica.repository.Chofer_DetalleRepository;
-import com.logitrack.sistema_logistica.repository.Empresa_ClienteRepository;
-import com.logitrack.sistema_logistica.repository.EnvioRepository;
-import com.logitrack.sistema_logistica.repository.EstablecimientoRepository;
-import com.logitrack.sistema_logistica.repository.Historial_EstadosRepository;
-import com.logitrack.sistema_logistica.repository.PersonaRepository;
-import com.logitrack.sistema_logistica.repository.UsuarioRepository;
+
+import com.logitrack.sistema_logistica.model.*;
+import com.logitrack.sistema_logistica.repository.*;
+
+import org.springframework.stereotype.Component;
+import java.time.LocalDate;
+import java.util.Arrays;
 
 
 @Component
