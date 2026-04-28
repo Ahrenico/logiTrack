@@ -12,7 +12,7 @@
         .bg-agro-gradient {
             background: linear-gradient(135deg, #1b4332 0%, #081c15 100%);
         }
-        
+
         /* Estilo para la tabla de datos */
         .table-custom-header th {
             background-color: #f8f9fa;
@@ -31,7 +31,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100 bg-light">
-    
+
     <header>
         <nav class="navbar py-3 shadow-sm bg-agro-gradient">
             <div class="container">
@@ -39,11 +39,12 @@
                     <img src="../img/logo-white.png" alt="Logo" height="50">
                     <span class="fs-3 fw-bold tracking-tight d-none d-sm-block">LogiTrack Agro</span>
                 </a>
-        
+
                 <div class="d-flex align-items-center gap-3 gap-md-4">
                     <div class="text-light text-end d-none d-sm-block">
-                        <small class="opacity-75 d-block lh-1" style="font-size: 0.75rem;">Operador Logístico</small>
                         <span class="fw-bold" id="nombreUsuario">Cargando...</span>
+                        <small class="opacity-75 d-block lh-1 text-capitalize" style="font-size: 0.75rem;"
+                            id="rolUsuario">Cargando...</small>
                     </div>
                     <button class="btn btn-outline-warning btn-sm fw-semibold px-3 py-2" id="btnCerrarSesion">
                         <i class="bi bi-box-arrow-right me-1"></i> Cerrar sesión
@@ -58,17 +59,20 @@
             <div class="row justify-content-center">
                 <div class="col-12 col-lg-10">
 
-                    <a href="./menu.html" class="text-decoration-none text-success fw-semibold mb-4 d-inline-flex align-items-center gap-2">
+                    <a href="./menu.html"
+                        class="text-decoration-none text-success fw-semibold mb-4 d-inline-flex align-items-center gap-2">
                         <i class="bi bi-arrow-left-circle fs-5"></i> Volver al Panel
                     </a>
 
                     <div class="d-flex align-items-center gap-3 mb-4 mt-2">
-                        <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-3 border border-warning border-opacity-25 shadow-sm">
+                        <div
+                            class="bg-warning bg-opacity-10 text-warning p-3 rounded-3 border border-warning border-opacity-25 shadow-sm">
                             <i class="bi bi-clock-history fs-3"></i>
                         </div>
                         <div>
                             <h4 class="fw-bold text-dark mb-1">Auditoría Global</h4>
-                            <p class="text-muted small mb-0">Registro histórico de modificaciones de estado y prioridad en la red logística.</p>
+                            <p class="text-muted small mb-0">Registro histórico de modificaciones de estado y prioridad
+                                en la red logística.</p>
                         </div>
                     </div>
 
@@ -76,7 +80,8 @@
                         <div class="py-5">
                             <i class="bi bi-clipboard-x text-muted opacity-25" style="font-size: 4rem;"></i>
                             <h6 class="fw-bold text-dark mt-4">Sin registros de auditoría</h6>
-                            <p class="text-muted mb-0 small">Actualmente no se encuentran cambios registrados en los envíos del sistema.</p>
+                            <p class="text-muted mb-0 small">Actualmente no se encuentran cambios registrados en los
+                                envíos del sistema.</p>
                         </div>
                     </div>
 
@@ -94,7 +99,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tbodyHistorial" class="border-top-0">
-                                    </tbody>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -106,7 +111,8 @@
 
     <footer class="mt-auto bg-agro-gradient text-light py-4">
         <div class="container text-center">
-            <p class="mb-1 opacity-75 small fw-light">© 2026 LogiTrack Agro - Sistema Federal de Gestión de Logística y Distribución.</p>
+            <p class="mb-1 opacity-75 small fw-light">© 2026 LogiTrack Agro - Sistema Federal de Gestión de Logística y
+                Distribución.</p>
             <p class="mb-0 opacity-50 small fw-light">Todos los derechos reservados.</p>
         </div>
     </footer>
