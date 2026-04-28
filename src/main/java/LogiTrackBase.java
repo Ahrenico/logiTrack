@@ -1,4 +1,4 @@
-package com.logitrack;
+/*package com.logitrack;
 
 public class LogiTrackBase {
     // US 1
@@ -24,3 +24,4 @@ public class LogiTrackBase {
     public String consultarPrediccionIA() { return "JSON_MERMAS"; }
     public boolean manejarErrorIA() { return true; }
 }
+*/

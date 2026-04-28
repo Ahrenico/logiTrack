@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Arrays;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Component
 public class DataSeed implements CommandLineRunner {
@@ -33,6 +33,9 @@ public class DataSeed implements CommandLineRunner {
     private EnvioRepository envioRepository;
     @Autowired
     private Historial_EstadosRepository historialEstadosRepository;
+        
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -50,10 +53,10 @@ public class DataSeed implements CommandLineRunner {
     protected void cargarDatosSemilla() {
         try {
             // 1. Usuarios
-            Usuario admin = Usuario.builder().username("supervisor1").password_hash("123456").rol(Rol_Usuario.SUPERVISOR).activo(true).build();
-            Usuario op = Usuario.builder().username("operador1").password_hash("123456").rol(Rol_Usuario.OPERADOR).activo(true).build();
-            Usuario chofer1 = Usuario.builder().username("chofer1").password_hash("123456").rol(Rol_Usuario.CHOFER).activo(true).build();
-            Usuario chofer2 = Usuario.builder().username("chofer2").password_hash("123456").rol(Rol_Usuario.CHOFER).activo(true).build();
+           Usuario admin = Usuario.builder().username("supervisor1").password_hash(passwordEncoder.encode("123456")).rol(Rol_Usuario.SUPERVISOR).activo(true).build();
+            Usuario op = Usuario.builder().username("operador1").password_hash(passwordEncoder.encode("123456")).rol(Rol_Usuario.OPERADOR).activo(true).build();
+            Usuario chofer1 = Usuario.builder().username("chofer1").password_hash(passwordEncoder.encode("123456")).rol(Rol_Usuario.CHOFER).activo(true).build();
+            Usuario chofer2 = Usuario.builder().username("chofer2").password_hash(passwordEncoder.encode("123456")).rol(Rol_Usuario.CHOFER).activo(true).build();
             
             admin = usuarioRepository.saveAndFlush(admin);
             op = usuarioRepository.saveAndFlush(op);
