@@ -7,12 +7,12 @@ if (!id) {
     window.location.href = "./busqueda.html";
 }
 
-const form          = document.getElementById("formDetalle");
-const btnEditar     = form.querySelector("button[type='submit']");
-const selectEstado  = document.getElementById("selectEstado");
+const form = document.getElementById("formDetalle");
+const btnEditar = form.querySelector("button[type='submit']");
+const selectEstado = document.getElementById("selectEstado");
 const selectPrioridad = document.getElementById("selectPrioridad");
 
-let estadoOriginal    = null;
+let estadoOriginal = null;
 let prioridadOriginal = null;
 
 function setSelectValue(selectEl, value) {
@@ -27,30 +27,26 @@ async function cargarDetalle() {
 
         const envio = await response.json();
 
-        document.getElementById("trackingId").textContent        = envio.trackingId ?? envio.id;
-        document.getElementById("remitente").value               = envio.remitente ?? "";
-        document.getElementById("emailRemitente").value          = envio.emailRemitente ?? "";
-        document.getElementById("telefonoRemitente").value       = envio.telefonoRemitente ?? "";
-        document.getElementById("destinatario").value            = envio.destinatario ?? "";
-        document.getElementById("emailDestinatario").value       = envio.emailDestinatario ?? "";
-        document.getElementById("telefonoDestinatario").value    = envio.telefonoDestinatario ?? "";
-        document.getElementById("direccionEntrega").value        = envio.direccionEntrega ?? "";
-        document.getElementById("ciudadEntrega").value           = envio.ciudadEntrega ?? "";
-        document.getElementById("codigoPostal").value            = envio.codigoPostal ?? "";
-        document.getElementById("peso").value                    = envio.peso ?? "";
-        document.getElementById("largo").value                   = envio.largo ?? "";
-        document.getElementById("ancho").value                   = envio.ancho ?? "";
-        document.getElementById("alto").value                    = envio.alto ?? "";
-        document.getElementById("tipo").value                    = envio.envioExpress ? "Express" : "Normal";
-        document.getElementById("checkFrio").checked             = envio.frio ?? false;
-        document.getElementById("checkFragil").checked           = envio.fragil ?? false;
-        document.getElementById("notasAdicionales").value        = envio.notasAdicionales ?? "";
+        // ─── NUEVO MAPEO DE CAMPOS (Alineado con crearEnvio y el nuevo HTML) ───
+        document.getElementById("trackingId").textContent = envio.id;
+        document.getElementById("clienteNombre").value = envio.clienteNombre || "No especificado";
+        document.getElementById("checkClienteEstrategico").checked = envio.clienteEstrategico || false;
 
-        setSelectValue(selectEstado,    envio.estado);
+        // Al tener solo IDs de origen y destino guardados en el mockAPI, mostramos esos IDs.
+        // En un backend real, aquí harías un cruce relacional o la API te enviaría los nombres.
+        document.getElementById("origenNombre").value = envio.origenId ? `Establecimiento ID: ${envio.origenId}` : "No especificado";
+        document.getElementById("destinoNombre").value = envio.destinoId ? `Establecimiento ID: ${envio.destinoId}` : "No especificado";
+
+        document.getElementById("distanciaKm").textContent = `${envio.distanciaKm || 0} km`;
+        document.getElementById("peso").value = envio.peso || 0;
+        document.getElementById("granoNombre").value = envio.granoNombre || "Carga General";
+
+        // ─── CAMPOS DE EDICIÓN OPERATIVA ───
+        setSelectValue(selectEstado, envio.estado);
         setSelectValue(selectPrioridad, envio.prioridad);
 
         // Guardar valores originales para detectar cambios al editar
-        estadoOriginal    = envio.estado;
+        estadoOriginal = envio.estado;
         prioridadOriginal = envio.prioridad;
 
         await cargarHistorial();
@@ -58,11 +54,11 @@ async function cargarDetalle() {
     } catch (error) {
         console.error(error);
         await Swal.fire({
-            position:          "center",
-            icon:              "error",
-            title:             "Ocurrió un error al visualizar el envío",
+            position: "center",
+            icon: "error",
+            title: "Ocurrió un error al visualizar el envío",
             showConfirmButton: false,
-            timer:             1500
+            timer: 1500
         });
         window.location.href = "./busqueda.html";
     }
@@ -76,15 +72,15 @@ async function cargarHistorial() {
                 <span class="spinner-border spinner-border-sm me-1"></span> Cargando historial...
             </td>
         </tr>`;
- 
+
     try {
         const response = await fetch(`${REGISTROS_URL}?envio=${id}`);
         if (!response.ok) throw new Error("Error al obtener registros");
- 
+
         const todos = await response.json();
         // MockAPI filtra por substring, así que hay que asegurar igualdad exacta del lado del cliente
         const registros = todos.filter(reg => String(reg.envio) === String(id));
- 
+
         if (!registros.length) {
             tbody.innerHTML = `
                 <tr>
@@ -92,12 +88,12 @@ async function cargarHistorial() {
                 </tr>`;
             return;
         }
- 
+
         tbody.innerHTML = registros.map((reg, index) => {
             const fecha = reg.createdAt ? new Date(reg.createdAt) : null;
             const fechaStr = fecha ? fecha.toLocaleDateString("es-AR") : "—";
-            const horaStr  = fecha ? fecha.toLocaleTimeString("es-AR") : "—";
- 
+            const horaStr = fecha ? fecha.toLocaleTimeString("es-AR") : "—";
+
             return `
                 <tr>
                     <td class="ps-4 small fw-medium">${String(reg.id).padStart(3, "0")}</td>
@@ -107,7 +103,7 @@ async function cargarHistorial() {
                     <td class="small">${reg.usuario ?? "—"}</td>
                 </tr>`;
         }).join("");
- 
+
     } catch (error) {
         console.error("Error al cargar historial:", error);
         tbody.innerHTML = `
@@ -118,32 +114,30 @@ async function cargarHistorial() {
 }
 
 async function editarEnvio() {
-    const nuevoEstado     = selectEstado.value;
-    const nuevaPrioridad  = selectPrioridad.value;
+    const nuevoEstado = selectEstado.value;
+    const nuevaPrioridad = selectPrioridad.value;
 
     try {
-        btnEditar.disabled  = true;
+        btnEditar.disabled = true;
         btnEditar.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Guardando...`;
 
         const response = await fetch(`${API_URL}/${id}`, {
-            method:  "PUT",
+            method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body:    JSON.stringify({ estado: nuevoEstado, prioridad: nuevaPrioridad })
+            body: JSON.stringify({ estado: nuevoEstado, prioridad: nuevaPrioridad })
         });
 
         if (!response.ok) throw new Error("Error al actualizar el envío");
 
         if (nuevoEstado === estadoOriginal && nuevaPrioridad === prioridadOriginal) {
-            console.log("asdwa");
-            
             Swal.fire({
-            position:          "center",
-            icon:              "error",
-            title:             "No se ha modificado ningún valor",
-            showConfirmButton: false,
-            timer:             2000
-        });
-        }else{
+                position: "center",
+                icon: "info",
+                title: "No se ha modificado ningún valor",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        } else {
             // Crear registros solo si hubo cambios efectivos
             if (nuevoEstado !== estadoOriginal) {
                 await crearRegistro(id, "estado", estadoOriginal, nuevoEstado);
@@ -151,30 +145,30 @@ async function editarEnvio() {
 
             if (nuevaPrioridad !== prioridadOriginal) {
                 await crearRegistro(id, "prioridad", prioridadOriginal, nuevaPrioridad);
-        }
+            }
 
-        await Swal.fire({
-            position:          "center",
-            icon:              "success",
-            title:             "Envío actualizado correctamente.",
-            showConfirmButton: false,
-            timer:             1500
-        });
-        window.location.href = "./busqueda.html";
-        } 
+            await Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Envío actualizado correctamente.",
+                showConfirmButton: false,
+                timer: 1500
+            });
+            window.location.href = "./busqueda.html";
+        }
 
     } catch (error) {
         console.error(error);
         Swal.fire({
-            position:          "center",
-            icon:              "error",
-            title:             "No se pudo actualizar el envío",
+            position: "center",
+            icon: "error",
+            title: "No se pudo actualizar el envío",
             showConfirmButton: false,
-            timer:             1500
+            timer: 1500
         });
     } finally {
-        btnEditar.disabled  = false;
-        btnEditar.innerHTML = "Editar";
+        btnEditar.disabled = false;
+        btnEditar.innerHTML = "Guardar Cambios";
     }
 }
 
