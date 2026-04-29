@@ -72,11 +72,12 @@
                                 </div>
                                 <h4 class="fw-bold mb-0 text-dark">Rastreo de Envío</h4>
                             </div>
-                            <p class="text-muted small mb-4 ms-5">Busca envíos por ID de Rastreo o destino.</p>
+                            <p class="text-muted small mb-4 ms-5">Busca por ID Interno, Código CTG, Empresa de
+                                Origen/Destino o Tipo de Grano.</p>
 
                             <form>
                                 <div class="row g-3 align-items-end ms-md-4">
-                                    <div class="col-12 col-md-5">
+                                    <!-- <div class="col-12 col-md-5">
                                         <label class="form-label small fw-bold text-uppercase text-muted">Parámetro de
                                             búsqueda</label>
                                         <div class="input-group shadow-sm rounded-3">
@@ -86,8 +87,23 @@
                                                 class="form-control bg-light border-0 ps-0 focus-ring focus-ring-success py-2"
                                                 id="searchInput" placeholder="ID Rastreo o Destino">
                                         </div>
+                                    </div> -->
+                                    <div class="col-12 col-md-12">
+                                        <label for="searchInput"
+                                            class="form-label small fw-bold text-uppercase text-muted">Término de
+                                            búsqueda</label>
+                                        <div
+                                            class="input-group shadow-sm rounded-3 mb-2 border border-success border-opacity-25">
+                                            <span class="input-group-text bg-white border-0"><i
+                                                    class="bi bi-search text-success"></i></span>
+
+                                            <input type="text" id="searchInput"
+                                                class="form-control bg-white border-0 ps-0 focus-ring focus-ring-success py-2"
+                                                placeholder="Ej: LT-001, 89456123, Los Grobo, Rosario, Soja..."
+                                                autocomplete="off">
+                                        </div>
                                     </div>
-                                    <div class="col-12 col-md-4">
+                                    <div class="col-12 col-md-6">
                                         <label class="form-label small fw-bold text-uppercase text-muted">Estado
                                             Operativo</label>
                                         <select
@@ -100,7 +116,7 @@
                                             <option>Entregado</option>
                                         </select>
                                     </div>
-                                    <div class="col-12 col-md-3 d-flex gap-2">
+                                    <div class="col-12 col-md-6 d-flex gap-2">
                                         <button type="reset"
                                             class="btn btn-light border-0 shadow-sm py-2 px-3 text-muted w-50"
                                             title="Limpiar filtros">
