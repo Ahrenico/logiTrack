@@ -194,5 +194,70 @@ public class EnvioController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+
+    /* GEMINI:
+     *El peligro del FetchType.LAZY (Error de Jackson)
+     * Si observamos tu clase Historial_Estados.java, vemos esto:
+     * 
+     * 
+     * @ManyToOne(fetch = FetchType.LAZY)
+     * @JoinColumn(name = "id_envio", referencedColumnName = "id_envio")
+     * private Envio envio;
+     * 
+     * @ManyToOne(fetch = FetchType.LAZY)
+     * @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
+     * private Usuario usuario;
+     * 
+     * 
+     * En Spring Boot, cuando intentamos devolver por la API un objeto que tiene
+     * relaciones marcadas como LAZY directamente a JSON, Spring lanza una de las
+     * excepciones más famosas y temidas: LazyInitializationException (o se queda en
+     * un bucle infinito de serialización de JSON).
+     * 
+     * Para evitar que tu aplicación se rompa, la mejor práctica es no devolver la
+     * entidad Historial_Estados directamente, sino devolver un objeto simplificado
+     * (DTO).
+     */
+
+    // 1. DTO Interno para evitar problemas de FetchType.LAZY
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class HistorialResponseDTO {
+        private Integer idReg;
+        private String idRastreo;
+        private String estadoAnterior;
+        private String estadoNuevo;
+        private LocalDateTime fechaHora;
+        private String responsable;
+    }
+
+    @Autowired
+    private Historial_EstadosRepository historialEstadosRepository;
+
+    // 2. Endpoint Global de Auditoría
+    @GetMapping("/historial-completo")
+    public ResponseEntity<List<HistorialResponseDTO>> obtenerHistorialCompleto() {
+        // Obtenemos todos los registros ordenados por fecha descendente (más reciente
+        // primero)
+        List<Historial_Estados> listaCompleta = historialEstadosRepository.findAll();
+
+        // Mapeamos a nuestro DTO para enviar solo lo necesario y evitar errores de JSON
+        List<HistorialResponseDTO> respuesta = listaCompleta.stream()
+                .map(h -> HistorialResponseDTO.builder()
+                        .idReg(h.getId_historial())
+                        .idRastreo(h.getEnvio().getId_envio())
+                        .estadoAnterior(h.getEstado_anterior() != null ? h.getEstado_anterior().name() : "INICIAL")
+                        .estadoNuevo(h.getEstado_nuevo().name())
+                        .fechaHora(h.getFecha_hora())
+                        .responsable(h.getUsuario().getUsername())
+                        .build())
+                .sorted((a, b) -> b.getFechaHora().compareTo(a.getFechaHora())) // Ordenar por fecha
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(respuesta);
+    }
     ////////////////////////////////////////////////////////////////////////////////////////////////
 }
