@@ -1,14 +1,12 @@
-# 1. Usamos una imagen moderna de Java 21 (Eclipse Temurin es la que va ahora)
-FROM eclipse-temurin:21-jdk-jammy
-
-# 2. Creamos una carpeta para la app
+# ETAPA 1: Compilación (Render construye el .jar por vos)
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-# 3. Copiamos el archivo .jar de la carpeta target a la imagen
-COPY target/*.jar app.jar
-
-# 4. Exponemos el puerto 8080
+# ETAPA 2: Ejecución (Se corre el programa)
+FROM eclipse-temurin:21-jdk-jammy
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-
-# 5. Comando para arrancar
 ENTRYPOINT ["java", "-jar", "app.jar"]
