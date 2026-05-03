@@ -34,6 +34,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/envios/**").permitAll()
+                .requestMatchers("/api/catalogos/**").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
@@ -46,18 +48,19 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    @Bean
+    
+    /*@Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // ⚠️ IMPORTANTE: Acá poné la URL real de Vercel que te pasen los chicos de Front
+   
         configuration.setAllowedOrigins(Arrays.asList(
-            "https://tu-proyecto-front.vercel.app", 
+            "https://tu-proyecto-front.vercel.app", // poner 
             "http://localhost:5500", 
             "http://localhost:3000",
-            "http://localhost:5173" // Agregué el puerto 5173 por si usan Vite en local
+            "http://localhost:5173" 
         ));
-        
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true); 
@@ -65,7 +68,24 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
+    }*/
 
-    
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        
+        // 1. Deshabilitamos credenciales si usamos SOLO JWT
+        // (Como me confirmaste que usan JWT, esto no afectará tu autenticación)
+        configuration.setAllowCredentials(false);
+        
+        // 2. Al estar en false, PODEMOS usar el comodín global
+        configuration.setAllowedOrigins(Arrays.asList("*")); 
+        
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
