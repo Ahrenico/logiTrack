@@ -41,7 +41,7 @@ public class EnvioService {
 
         // 2. Construir el objeto Envio
         Envio nuevoEnvio = Envio.builder()
-                .tracking_ctg(dto.getTracking_ctg())
+                .id_envio(dto.getId_envio())
                 .cpe(dto.getCpe())
                 .origen(origen)
                 .destino(destino)
@@ -71,9 +71,9 @@ public class EnvioService {
     }
 
     //que pasa si el envío existe o si no se encuentra.
-    public Envio buscarPorTracking(String trackingCtg) {
-        return envioRepository.buscarPorTracking(trackingCtg)
-            .orElseThrow(() -> new RuntimeException("No se encontró el envío con el Tracking ID: " + trackingCtg));
+    public Envio buscarPorId(String id_envio) {
+        return envioRepository.buscarPorId(id_envio)
+            .orElseThrow(() -> new RuntimeException("No se encontró el envío con el id_envio: " + id_envio));
     }
 
     public List<Historial_Estados> obtenerHistorialPorEnvio(String idEnvio) {

@@ -101,8 +101,8 @@ public class DataSeed implements CommandLineRunner {
             cam2 = camionRepository.saveAndFlush(cam2);
 
             // 6. Envíos
-            Envio env1 = Envio.builder().tracking_ctg("CTG-001").cpe("CPE-001").origen(est2).destino(est1).chofer(cd1).camion(cam1).tipo_grano(Tipo_Grano.SOJA).estado_actual(Estado_Envio.PENDIENTE).prioridad_ia("ALTA").kg_origen(30000).build();
-            Envio env2 = Envio.builder().tracking_ctg("CTG-002").cpe("CPE-002").origen(est2).destino(est1).chofer(cd2).camion(cam2).tipo_grano(Tipo_Grano.MAIZ).estado_actual(Estado_Envio.PENDIENTE).prioridad_ia("MEDIA").kg_origen(28000).build();
+            Envio env1 = Envio.builder().cpe("CPE-001").origen(est2).destino(est1).chofer(cd1).camion(cam1).tipo_grano(Tipo_Grano.SOJA).estado_actual(Estado_Envio.PENDIENTE).prioridad_ia("ALTA").kg_origen(30000).build();
+            Envio env2 = Envio.builder().cpe("CPE-002").origen(est2).destino(est1).chofer(cd2).camion(cam2).tipo_grano(Tipo_Grano.MAIZ).estado_actual(Estado_Envio.PENDIENTE).prioridad_ia("MEDIA").kg_origen(28000).build();
             
             env1 = envioRepository.saveAndFlush(env1);
             env2 = envioRepository.saveAndFlush(env2);

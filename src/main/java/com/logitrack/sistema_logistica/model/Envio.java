@@ -23,8 +23,8 @@ public class Envio {
     @Column(name = "id_envio", length = 20) 
     private String id_envio;
 
-    @Column(name = "tracking_ctg", unique = true, nullable = false, length = 50)
-    private String tracking_ctg;
+    /*@Column(name = "tracking_ctg", unique = true, nullable = false, length = 50)
+    private String tracking_ctg;*/ //BORRAR COLUMNA DE LA BASE DE DATOS MANUALMENTE
 
     @Column(name = "cpe", unique = true, length = 50)
     private String cpe;

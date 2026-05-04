@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface EnvioRepository extends JpaRepository<Envio, String> {
     
     // Forzamos a Hibernate a buscar por el nombre exacto de la variable en el modelo
-    @Query("SELECT e FROM Envio e WHERE e.tracking_ctg = :tracking")
-    Optional<Envio> buscarPorTracking(@Param("tracking") String tracking);
+    @Query("SELECT e FROM Envio e WHERE e.id_envio = :id_envio")
+    Optional<Envio> buscarPorId(@Param("id_envio") String id_envio);
 }
