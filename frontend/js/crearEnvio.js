@@ -253,7 +253,7 @@ form.addEventListener("submit", async function (e) {
             showConfirmButton: false,
             timer: 1500
         });
-        window.location.href = "../menu.html";
+        window.location.href = "./menu.html";
 
     } catch (error) {
         console.error(error);
