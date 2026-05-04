@@ -33,33 +33,58 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
+        // Si no hay token, dejamos pasar (SecurityConfig decide si la ruta es pública o no)
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7); // Saca el "Bearer " del principio
+        String token = authHeader.substring(7);
 
         try {
             String username = jwtService.validateTokenAndGetUsername(token);
 
-            // Verificamos que el usuario exista en la BD y esté activo
-            usuarioRepository.findByUsername(username).ifPresent(usuario -> {
+            usuarioRepository.findByUsername(username).ifPresentOrElse(usuario -> {
                 if (Boolean.TRUE.equals(usuario.getActivo())) {
-                    // Cargamos el rol como autoridad de Spring Security
+                    // Usuario activo: registramos la autenticación en el contexto
                     var auth = new UsernamePasswordAuthenticationToken(
                             username,
                             null,
                             List.of(new SimpleGrantedAuthority("ROLE_" + usuario.getRol().name()))
                     );
-                    // Registramos la autenticación en el contexto de esta request
                     SecurityContextHolder.getContext().setAuthentication(auth);
+                } else {
+                    // Usuario existe pero está inactivo: rechazamos explícitamente
+                    try {
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"error\": \"Usuario inactivo\"}");
+                    } catch (IOException e) {
+                        logger.error("Error escribiendo respuesta de usuario inactivo", e);
+                    }
+                }
+            }, () -> {
+                // El token era válido pero el usuario ya no existe en la BD
+                try {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\": \"Usuario no encontrado\"}");
+                } catch (IOException e) {
+                    logger.error("Error escribiendo respuesta de usuario no encontrado", e);
                 }
             });
 
         } catch (JWTVerificationException e) {
-            // Token inválido no se autentica
-            // El SecurityConfig decidirá si bloquea o no la ruta
+            // Token malformado, expirado o con firma inválida
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Token inválido o expirado\"}");
+            return; // Cortamos la cadena, no seguimos procesando
+        }
+
+        // Si la respuesta ya fue comprometida (usuario inactivo o no encontrado), no seguimos
+        if (response.isCommitted()) {
+            return;
         }
 
         filterChain.doFilter(request, response);
