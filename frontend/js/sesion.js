@@ -4,7 +4,7 @@ const token = sessionStorage.getItem("token");
 
 // Si no hay usuario o no hay token, lo expulsamos al index
 if (!usuarioJSON || !token) {
-    window.location.href = "./index.html";
+    window.location.href = "../index.html";
 }
 
 const usuario = JSON.parse(usuarioJSON);
@@ -28,7 +28,7 @@ if (btnCerrar) {
         // Es vital eliminar el token JWT además de los datos del usuario
         sessionStorage.removeItem("usuarioLogueado");
         sessionStorage.removeItem("token");
-        window.location.href = "./index.html";
+        window.location.href = "../index.html";
     });
 }
 

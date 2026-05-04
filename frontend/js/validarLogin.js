@@ -44,7 +44,7 @@ async function login() {
             }));
             
             // Redirigimos al menú principal
-            window.location.href = "./menu.html";
+            window.location.href = "./views/menu.html";
         }
 
     } catch (error) {

@@ -38,7 +38,7 @@ async function buscar() {
         
         if (!res.ok) {
             // Si el token expiró, pateamos al usuario al login
-            if (res.status === 401) window.location.href = "./index.html";
+            if (res.status === 401) window.location.href = "../index.html";
             throw new Error("Error al obtener los envíos");
         }
         

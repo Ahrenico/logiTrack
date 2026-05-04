@@ -33,7 +33,7 @@ async function cargarHistorialDeCambios() {
         const response = await fetch(API_URL, { headers: authHeaders });
 
         if (!response.ok) {
-            if (response.status === 401) window.location.href = "./index.html";
+            if (response.status === 401) window.location.href = "../index.html";
             throw new Error("Error al obtener el historial del servidor");
         }
 
