@@ -1,5 +1,5 @@
-// Asegúrate de poner el puerto correcto donde corre tu Spring Boot (usualmente 8080)
-const API_URL = "http://localhost:8080/api/auth/login";
+// API_BASE_URL se define en frontend/js/config.js
+const API_URL = `${API_BASE_URL}/auth/login`;
 
 async function login() {
     // 1. Capturamos los valores del HTML

@@ -1,5 +1,5 @@
-// Apuntamos al backend real
-const API_URL = "http://localhost:8080/api/envios";
+// Apuntamos al backend centralizado en frontend/js/config.js
+const API_URL = `${API_BASE_URL}/envios`;
 
 // Extraemos el token JWT de la sesión
 const tokenAuth = sessionStorage.getItem("token");

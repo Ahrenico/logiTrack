@@ -1,5 +1,4 @@
-// Asegúrate de usar el puerto correcto de tu Spring Boot
-const API_BASE_URL = "http://localhost:8080/api";
+// API_BASE_URL se define en frontend/js/config.js
 
 // Le cambiamos el nombre a 'tokenAuth' para que no choque con sesion.js
 const tokenAuth = sessionStorage.getItem("token");

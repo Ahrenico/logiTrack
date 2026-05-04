@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:8080/api/envios/historial-completo";
+// API_BASE_URL se define en frontend/js/config.js
+const API_URL = `${API_BASE_URL}/envios/historial-completo`;
 const tokenAuth = sessionStorage.getItem("token");
 
 const authHeaders = {
