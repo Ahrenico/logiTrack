@@ -129,11 +129,11 @@
                                                 <option value="" selected>Seleccione un cliente primero...</option>
                                             </select>
                                         </div>
-                                        <div class="small text-muted d-flex align-items-start gap-2 mt-2">
+                                        <!-- <div class="small text-muted d-flex align-items-start gap-2 mt-2">
                                             <i class="bi bi-info-circle-fill text-success opacity-75 mt-1"></i>
                                             <span id="direccionOrigenInfo" class="fst-italic">Dirección de carga no
                                                 disponible.</span>
-                                        </div>
+                                        </div> -->
                                     </div>
 
                                     <div class="col-12 col-md-6">
@@ -149,11 +149,11 @@
                                                 <option value="" selected>Seleccione un cliente primero...</option>
                                             </select>
                                         </div>
-                                        <div class="small text-muted d-flex align-items-start gap-2 mt-2">
+                                        <!-- <div class="small text-muted d-flex align-items-start gap-2 mt-2">
                                             <i class="bi bi-info-circle-fill text-success opacity-75 mt-1"></i>
                                             <span id="direccionDestinoInfo" class="fst-italic">Dirección de descarga no
                                                 disponible.</span>
-                                        </div>
+                                        </div> -->
                                     </div>
 
                                     <div class="col-12 mt-2">
@@ -171,6 +171,56 @@
                                         </div>
                                     </div>
 
+                                </div>
+
+                                <h6 class="fw-bold text-success mb-3 border-bottom border-success-subtle pb-2">
+                                    <i class="bi bi-file-earmark-text me-2"></i>Documentación Fiscal (AFIP)
+                                </h6>
+                                <div class="row g-3 mb-5">
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label small fw-bold text-uppercase text-muted">Código CTG
+                                            <span class="text-danger">*</span></label>
+                                        <div class="input-group shadow-sm rounded-3">
+                                            <span class="input-group-text bg-light border-0"><i
+                                                    class="bi bi-upc-scan text-muted"></i></span>
+                                            <input type="text" id="inputCtg"
+                                                class="form-control bg-light border-0 ps-0 focus-ring focus-ring-success py-2"
+                                                placeholder="Nro. de Trazabilidad">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label small fw-bold text-uppercase text-muted">CPE (Carta de
+                                            Porte) <span class="text-danger">*</span></label>
+                                        <div class="input-group shadow-sm rounded-3">
+                                            <span class="input-group-text bg-light border-0"><i
+                                                    class="bi bi-file-text text-muted"></i></span>
+                                            <input type="text" id="inputCpe"
+                                                class="form-control bg-light border-0 ps-0 focus-ring focus-ring-success py-2"
+                                                placeholder="Nro. de Carta de Porte">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h6 class="fw-bold text-success mb-3 border-bottom border-success-subtle pb-2">
+                                    <i class="bi bi-truck me-2"></i>Asignación de Transporte
+                                </h6>
+                                <div class="row g-3 mb-5">
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label small fw-bold text-uppercase text-muted">Chofer
+                                            Asignado <span class="text-danger">*</span></label>
+                                        <select id="selectChofer"
+                                            class="form-select bg-light border-0 shadow-sm focus-ring focus-ring-success py-2">
+                                            <option value="" selected>Cargando choferes...</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label small fw-bold text-uppercase text-muted">Vehículo
+                                            (Camión) <span class="text-danger">*</span></label>
+                                        <select id="selectCamion"
+                                            class="form-select bg-light border-0 shadow-sm focus-ring focus-ring-success py-2">
+                                            <option value="" selected>Cargando flota...</option>
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <h6 class="fw-bold text-success mb-3 border-bottom border-success-subtle pb-2">
@@ -297,8 +347,8 @@
         </div>
     </footer>
 
+    <script src="../js/config.js"></script>
     <script src="../js/validarEnvio.js"></script>
-    <script src="../js/crearRegistro.js"></script>
     <script src="../js/crearEnvio.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../js/sesion.js"></script>

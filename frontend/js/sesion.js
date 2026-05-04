@@ -1,51 +1,43 @@
-const usuario = JSON.parse(sessionStorage.getItem("usuarioLogueado"));
+// 1. Verificación de Seguridad (Auth Guard)
+const usuarioJSON = sessionStorage.getItem("usuarioLogueado");
+const token = sessionStorage.getItem("token");
 
-// Mostrar nombre y rol
-if (!usuario) {
-    window.location.href = "./index.html";
-} else {
-    // Carga el nombre del usuario
-    document.getElementById("nombreUsuario").textContent = usuario.nombre;
-    
-    // Carga el rol del usuario si el elemento existe en la página
-    const elRol = document.getElementById("rolUsuario");
-    if (elRol) {
-        elRol.textContent = usuario.rol;
-    }
+// Si no hay usuario o no hay token, lo expulsamos al index
+if (!usuarioJSON || !token) {
+    window.location.href = "../index.html";
 }
 
-//cierre de sesion
-document.getElementById("btnCerrarSesion").addEventListener("click", () => {
-    sessionStorage.removeItem("usuarioLogueado");
-    window.location.href = "./index.html";
-});
+const usuario = JSON.parse(usuarioJSON);
 
-//habilitar selects de estado y prioridad segun rol
-document.querySelectorAll(".edicion").forEach(e => {
-    
-    if (usuario.rol != "supervisor") {
-        
-        e.disabled = true;
-    }
-});
+// 2. Cargar datos en la Interfaz
+// Usamos usuario.username porque así lo devuelve tu LoginResponseDTO
+const nombreUI = document.getElementById("nombreUsuario");
+if (nombreUI) nombreUI.textContent = usuario.username;
 
-//Ocultar botones de edicion
-const divBotones = document.getElementById("botonesEdicion")
-if (divBotones) {
-    if (usuario.rol === "supervisor") {
-        divBotones.classList.remove("d-none");
-    } else {
-        divBotones.classList.add("d-none");
-    }
+const elRol = document.getElementById("rolUsuario");
+if (elRol) {
+    // Limpiamos el rol por si Spring Boot envía "ROLE_SUPERVISOR" y lo ponemos bonito
+    const rolMostrar = usuario.rol.replace('ROLE_', '').toLowerCase();
+    elRol.textContent = rolMostrar;
 }
 
+// 3. Lógica de Cierre de Sesión
+const btnCerrar = document.getElementById("btnCerrarSesion");
+if (btnCerrar) {
+    btnCerrar.addEventListener("click", () => {
+        // Es vital eliminar el token JWT además de los datos del usuario
+        sessionStorage.removeItem("usuarioLogueado");
+        sessionStorage.removeItem("token");
+        window.location.href = "../index.html";
+    });
+}
 
-// Localizar la card de historial
+// 4. Mostrar panel de historial en el Menú (solo si es la pantalla menu.html)
+// Spring Boot envía "SUPERVISOR", lo pasamos a minúsculas para comparar fácilmente
+const rolNormalizado = usuario.rol.toLowerCase().replace('role_', '');
 const cardHistorial = document.getElementById("cardHistorial");
-
 if (cardHistorial) {
-    // Si el usuario es supervisor, se muestra; de lo contrario, se elimina del diseño
-    if (usuario.rol === "supervisor") {
+    if (rolNormalizado === "supervisor") {
         cardHistorial.classList.remove("d-none");
     } else {
         cardHistorial.classList.add("d-none");
