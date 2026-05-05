@@ -195,17 +195,19 @@ public class EnvioController {
         }
     }
 
-
-    /* GEMINI:
-     *El peligro del FetchType.LAZY (Error de Jackson)
+    /*
+     * GEMINI:
+     * El peligro del FetchType.LAZY (Error de Jackson)
      * Si observamos tu clase Historial_Estados.java, vemos esto:
      * 
      * 
      * @ManyToOne(fetch = FetchType.LAZY)
+     * 
      * @JoinColumn(name = "id_envio", referencedColumnName = "id_envio")
      * private Envio envio;
      * 
      * @ManyToOne(fetch = FetchType.LAZY)
+     * 
      * @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
      * private Usuario usuario;
      * 

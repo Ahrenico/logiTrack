@@ -11,6 +11,7 @@ const authHeaders = {
 // Referencias al DOM
 const searchInput = document.getElementById("searchInput");
 const stateSelect = document.getElementById("stateSelect");
+const dateSelect = document.getElementById("dateSelect");
 const resultsTable = document.getElementById("resultsTable");
 const tbody = resultsTable.querySelector("tbody");
 const emptyTable = document.getElementById("emptyTable");
@@ -18,10 +19,24 @@ const noResultsTable = document.getElementById("noResultsTable");
 const btnBuscar = document.querySelector("form button[type='submit']");
 const btnLimpiar = document.querySelector("form button[type='reset']");
 
-// Función principal de búsqueda
-async function buscar() {
+// Nuevas Referencias para Paginación
+const paginationInfo = document.getElementById("paginationInfo");
+const liPrevPage = document.getElementById("liPrevPage");
+const liNextPage = document.getElementById("liNextPage");
+const btnPrevPage = document.getElementById("btnPrevPage");
+const btnNextPage = document.getElementById("btnNextPage");
+
+// Variable global para rastrear la página actual
+let currentPage = 0;
+
+// Función principal de búsqueda (ahora recibe la página objetivo)
+async function buscar(pageNumber = 0) {
     const query = searchInput.value.trim().toLowerCase();
     const estadoFiltro = stateSelect.value; // Ej: "En tránsito"
+    const fechaFiltro = dateSelect.value; // Captura la fecha en formato "YYYY-MM-DD"
+
+    // Actualizamos el estado global
+    currentPage = pageNumber;
 
     // Estado visual de carga
     btnBuscar.disabled = true;
@@ -33,57 +48,43 @@ async function buscar() {
     noResultsTable.classList.add("d-none");
 
     try {
-        // Hacemos el GET al backend enviando el Token
-        const res = await fetch(API_URL, { headers: authHeaders });
+        // 1. Armar la URL con los parámetros (para apuntar al nuevo endpoint paginado) y la página actual
+        const urlParams = new URLSearchParams();
+        if (query) urlParams.append("query", query);
+        if (estadoFiltro) urlParams.append("estado", estadoFiltro);
+        if (fechaFiltro) urlParams.append("fecha", fechaFiltro);
+
+        // Paginación (Spring Boot usa índice 0 para la primera página)
+        urlParams.append("page", currentPage);
+        urlParams.append("size", 20); // Muestra 20 resultados por página
+
+        // Petición al backend
+        const res = await fetch(`${API_URL}/busqueda-avanzada?${urlParams.toString()}`, { headers: authHeaders });
 
         if (!res.ok) {
-            // Si el token expiró, pateamos al usuario al login
             if (res.status === 401) window.location.href = "../index.html";
             throw new Error("Error al obtener los envíos");
         }
 
-        const envios = await res.json();
+        // 2. Leer la respuesta paginada de Spring Data. Spring Data Page devuelve los arrays dentro de la propiedad "content"
+        const dataPaginada = await res.json();
+        const envios = dataPaginada.content;
 
-        // Filtrado lógico en el cliente
-        const filtrados = envios.filter(e => {
-            // Extraemos los datos previniendo que vengan nulos (Optional Chaining '?')
-            const idEnvio = e.id_envio || "";
-            const ctg = e.tracking_ctg || "";
-            const cliente = e.origen?.empresa?.razon_social || "";
-            const destino = e.destino?.empresa?.razon_social || "";
-            const grano = e.tipo_grano || "";
+        // Actualizar interfaz de paginación
+        actualizarControlesPaginacion(dataPaginada);
 
-            const coincideQuery =
-                idEnvio.toLowerCase().includes(query) ||
-                ctg.toLowerCase().includes(query) ||
-                cliente.toLowerCase().includes(query) ||
-                destino.toLowerCase().includes(query) ||
-                grano.toLowerCase().includes(query);
-
-            // Normalizamos el Enum del backend (ej. "EN_TRANSITO") vs el Select ("En tránsito")
-            let estadoNormalizado = estadoFiltro.toUpperCase().replaceAll(' ', '_');
-            if (estadoNormalizado === "EN_TRÁNSITO") estadoNormalizado = "EN_TRANSITO";
-            if (estadoNormalizado === "EN_PUNTO_DE_RECOLECCIÓN") estadoNormalizado = "EN_PUNTO_DE_RECOLECCION";
-
-            const coincideEstado = estadoFiltro === "Cualquier Estado" || e.estado_actual === estadoNormalizado;
-
-            return coincideQuery && coincideEstado;
-        });
-
-        // Manejo de sin resultados
-        if (filtrados.length === 0) {
+        // 3. Manejo de sin resultados
+        if (envios.length === 0) {
             resultsTable.classList.add("d-none");
             noResultsTable.classList.remove("d-none");
             return;
         }
 
-        // Dibujar filas mapeando la clase Envio.java
-        tbody.innerHTML = filtrados.map(e => {
-            // Conversiones para la vista
+        // 4. Dibujar filas directamente (¡Adiós a la lógica de filtrado pesado en JS!)
+        tbody.innerHTML = envios.map(e => {
             const nombreCliente = e.origen?.empresa?.razon_social || "Sin cliente";
             const pesoTn = e.kg_origen ? (e.kg_origen / 1000).toFixed(1) : "0";
 
-            // Formateo avanzado para soportar múltiples guiones bajos y capitalización
             let estadoFormateado = "DESCONOCIDO";
             if (e.estado_actual) {
                 estadoFormateado = e.estado_actual.replaceAll('_', ' ').toLowerCase();
@@ -129,6 +130,32 @@ async function buscar() {
     }
 }
 
+// Lógica para habilitar/deshabilitar botones y textos de paginación
+function actualizarControlesPaginacion(data) {
+    console.log(data);
+    // Texto descriptivo (sumamos 1 porque Java usa 0 para la primera página)
+    const totalPaginas = data.total_pages === 0 ? 1 : data.total_pages;
+    paginationInfo.textContent = `Mostrando página ${data.number + 1} de ${totalPaginas}`;
+
+    // Deshabilitar botón "Anterior" si es la primera página
+    if (data.first) {
+        liPrevPage.classList.add("disabled");
+        btnPrevPage.classList.replace("text-success", "text-muted");
+    } else {
+        liPrevPage.classList.remove("disabled");
+        btnPrevPage.classList.replace("text-muted", "text-success");
+    }
+
+    // Deshabilitar botón "Siguiente" si es la última página
+    if (data.last) {
+        liNextPage.classList.add("disabled");
+        btnNextPage.classList.replace("text-success", "text-muted");
+    } else {
+        liNextPage.classList.remove("disabled");
+        btnNextPage.classList.replace("text-muted", "text-success");
+    }
+}
+
 // Función auxiliar para colorear los badges, usando los nombres exactos de tu Enum Java
 function getEstadoClass(estadoEnum) {
     switch (estadoEnum) {
@@ -141,10 +168,24 @@ function getEstadoClass(estadoEnum) {
         default: return 'bg-light text-dark border';
     }
 }
-// Evento: Enviar el formulario (Enter o Click en buscar)
+
+// Eventos de los botones de paginación
+btnPrevPage.addEventListener("click", () => {
+    if (!liPrevPage.classList.contains("disabled")) {
+        buscar(currentPage - 1);
+    }
+});
+
+btnNextPage.addEventListener("click", () => {
+    if (!liNextPage.classList.contains("disabled")) {
+        buscar(currentPage + 1);
+    }
+});
+
+// Evento: Enviar el formulario (Enter o Click en buscar) (Busca siempre desde la página 0)
 document.querySelector("form").addEventListener("submit", (e) => {
     e.preventDefault();
-    buscar();
+    buscar(0);
 });
 
 // Evento: Botón limpiar restaura la vista al estado inicial
@@ -153,5 +194,6 @@ if (btnLimpiar) {
         emptyTable.classList.remove("d-none");
         resultsTable.classList.add("d-none");
         noResultsTable.classList.add("d-none");
+        currentPage = 0; // Reseteamos la página
     });
 }
