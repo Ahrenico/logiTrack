@@ -23,8 +23,8 @@ public class Envio {
     @Column(name = "id_envio", length = 20) 
     private String id_envio;
 
-    @Column(name = "tracking_ctg", unique = true, nullable = false, length = 50)
-    private String tracking_ctg;
+    /*@Column(name = "tracking_ctg", unique = true, nullable = false, length = 50)
+    private String tracking_ctg;*/ //BORRAR COLUMNA DE LA BASE DE DATOS MANUALMENTE
 
     @Column(name = "cpe", unique = true, length = 50)
     private String cpe;
@@ -36,6 +36,9 @@ public class Envio {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_destino", referencedColumnName = "id_establecimiento")
     private Establecimiento destino;
+
+    @Column(name = "distancia_km")
+    private Double distancia_km;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_chofer", referencedColumnName = "id_chofer")
@@ -68,6 +71,9 @@ public class Envio {
     private LocalDateTime fecha_llegada;
     
     private LocalDateTime fecha_estimada_llegada;
+
+    @Column(columnDefinition = "TEXT")
+    private String comentarios;
 
     @PrePersist
     protected void onCreate() {

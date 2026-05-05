@@ -27,4 +27,10 @@ public class Establecimiento {
 
     @Column(name = "direccion", nullable = false, length = 255)
     private String direccion;
+
+    @Column(name = "latitud")
+    private Double latitud;
+
+    @Column(name = "longitud")
+    private Double longitud;
 }

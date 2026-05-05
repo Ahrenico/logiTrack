@@ -107,11 +107,11 @@ public class EnvioController {
         }
     }
 
-    // El Front va a llamar cuando el usuario escriba en la barra de búsqueda.
-    @GetMapping("/buscar/{trackingCtg}")
-    public ResponseEntity<?> obtenerEnvioPorTracking(@PathVariable String trackingCtg) {
+    //El Front va a llamar cuando el usuario escriba en la barra de búsqueda.
+    @GetMapping("/buscar/{id_envio}")
+    public ResponseEntity<?> obtenerEnvioPorTracking(@PathVariable String id_envio) {
         try {
-            Envio envio = envioService.buscarPorTracking(trackingCtg);
+            Envio envio = envioService.buscarPorId(id_envio);
             return ResponseEntity.ok(envio);
         } catch (RuntimeException e) {
 

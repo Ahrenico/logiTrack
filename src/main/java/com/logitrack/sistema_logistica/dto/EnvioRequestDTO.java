@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class EnvioRequestDTO {
-    private String tracking_ctg;
+    private String id_envio;
     private String cpe;
     private Integer id_origen;
     private Integer id_destino;
