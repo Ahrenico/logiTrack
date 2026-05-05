@@ -57,8 +57,18 @@ async function cargarHistorialDeCambios() {
             const fechaRaw = reg.fechaHora || reg.fecha_hora;
             const resp = reg.responsable;
 
-            // Parseo de fechas seguro
-            const fecha = fechaRaw ? new Date(fechaRaw) : null;
+            // Parseo de la fecha (LocalDateTime) que devuelve Java forzando la interpretación en UTC
+            let fecha = null;
+            if (reg.fecha_hora) {
+                let fechaString = reg.fecha_hora;
+                // Si el backend no envía la 'Z' de UTC, se la agregamos artificialmente
+                if (!fechaString.endsWith('Z')) {
+                    fechaString += 'Z';
+                }
+                fecha = new Date(fechaString);
+            }
+
+            // JavaScript convertirá automáticamente la fecha UTC a la zona horaria local del navegador (Argentina)
             const fechaStr = fecha ? fecha.toLocaleDateString("es-AR") : "—";
             const horaStr = fecha ? fecha.toLocaleTimeString("es-AR", { hour: '2-digit', minute: '2-digit' }) : "—";
 
