@@ -53,16 +53,18 @@ function aplicarPermisosSegunRol() {
 function normalizarEnum(valorEnum) {
     if (!valorEnum) return "Sin determinar";
     // De "EN_TRANSITO" a "En tránsito"
-    let texto = valorEnum.replace('_', ' ').toLowerCase();
+    let texto = valorEnum.replaceAll('_', ' ').toLowerCase();
     texto = texto.charAt(0).toUpperCase() + texto.slice(1);
     if (texto === "En transito") return "En tránsito";
+    if (texto === "En punto de recoleccion") return "En punto de recolección";
     return texto;
 }
 
 function enumParaJava(textoSelect) {
     // De "En tránsito" a "EN_TRANSITO"
-    let texto = textoSelect.toUpperCase().replace(' ', '_');
+    let texto = textoSelect.toUpperCase().replaceAll(' ', '_');
     if (texto === "EN_TRÁNSITO") return "EN_TRANSITO";
+    if (texto === "EN_PUNTO_DE_RECOLECCIÓN") return "EN_PUNTO_DE_RECOLECCION";
     return texto;
 }
 
@@ -221,7 +223,11 @@ function actualizarTimelineVisual(estadoBackend) {
     const estadoActual = normalizarEnum(estadoBackend);
 
     // 2. Definimos el orden lógico de los pasos en la ruta logística
-    const ordenEstados = ["Pendiente", "En tránsito", "En sucursal", "Entregado"];
+    const ordenEstados = ["Pendiente", "En tránsito", "En punto de recolección", "En reparto", "Entregado"];
+
+    // (Nota: 'Cancelado' no se incluye en el flujo lineal, ya que es una excepción. 
+    // Si el índice es -1, la línea de tiempo simplemente quedará en gris, lo cual es correcto).
+
     const indiceActual = ordenEstados.indexOf(estadoActual);
 
     // 3. Obtenemos todos los pasos dibujados en el HTML

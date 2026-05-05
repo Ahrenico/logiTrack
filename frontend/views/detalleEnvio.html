@@ -118,7 +118,7 @@
                                 <h6 class="fw-bold text-success mb-3 border-bottom pb-2">Estado del Recorrido</h6>
                                 <div class="row mb-5">
                                     <div class="col-12">
-                                        <div class="timeline">
+                                        <!-- <div class="timeline">
 
                                             <div class="timeline-item completed">
                                                 <div class="timeline-icon">
@@ -173,7 +173,79 @@
                                                 </div>
                                             </div>
 
+                                        </div> -->
+
+                                        <div class="timeline">
+
+                                            <!-- 1. Pendiente -->
+                                            <div class="timeline-item completed">
+                                                <div class="timeline-icon">
+                                                    <i class="bi bi-clipboard-check"></i>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <h6 class="mb-0 fw-bold text-success">Pendiente - Carga Asignada
+                                                        </h6>
+                                                    </div>
+                                                    <p class="text-muted small mb-0">Orden de carga registrada.
+                                                        Esperando camión en el origen.</p>
+                                                </div>
+                                            </div>
+
+                                            <!-- 2. En tránsito -->
+                                            <div class="timeline-item active">
+                                                <div class="timeline-icon">
+                                                    <i class="bi bi-truck"></i>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <h6 class="mb-0 fw-bold text-dark">En Tránsito</h6>
+                                                        <span class="badge bg-warning text-dark small">Actual</span>
+                                                    </div>
+                                                    <p class="text-muted small mb-0">El camión ha salido del
+                                                        establecimiento origen y se encuentra en ruta con los granos.
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <!-- 3. En punto de recolección (NUEVO) -->
+                                            <div class="timeline-item">
+                                                <div class="timeline-icon">
+                                                    <i class="bi bi-buildings"></i>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <h6 class="mb-1 fw-bold text-muted">En punto de recolección</h6>
+                                                    <p class="text-muted small mb-0 opacity-75">Llegada a planta,
+                                                        control de calidad (calado) y pesaje en balanza.</p>
+                                                </div>
+                                            </div>
+
+                                            <!-- 4. En reparto (NUEVO) -->
+                                            <div class="timeline-item">
+                                                <div class="timeline-icon">
+                                                    <i class="bi bi-box-seam"></i>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <h6 class="mb-1 fw-bold text-muted">En reparto</h6>
+                                                    <p class="text-muted small mb-0 opacity-75">La carga está en
+                                                        distribución hacia el destino final asignado.</p>
+                                                </div>
+                                            </div>
+
+                                            <!-- 5. Entregado -->
+                                            <div class="timeline-item">
+                                                <div class="timeline-icon">
+                                                    <i class="bi bi-flag"></i>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <h6 class="mb-1 fw-bold text-muted">Entregado</h6>
+                                                    <p class="text-muted small mb-0 opacity-75">Descarga de granos
+                                                        completada en destino de forma exitosa.</p>
+                                                </div>
+                                            </div>
+
                                         </div>
+
                                     </div>
                                 </div>
 
@@ -187,8 +259,10 @@
                                                 id="selectEstado">
                                                 <option>Pendiente</option>
                                                 <option>En tránsito</option>
-                                                <option>En sucursal</option>
+                                                <option>En punto de recolección</option>
+                                                <option>En reparto</option>
                                                 <option>Entregado</option>
+                                                <option>Cancelado</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6">
