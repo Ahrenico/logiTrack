@@ -87,8 +87,8 @@ public class DataSeed implements CommandLineRunner {
             emp1 = empresaClienteRepository.saveAndFlush(emp1);
             emp2 = empresaClienteRepository.saveAndFlush(emp2);
 
-            Establecimiento est1 = Establecimiento.builder().nombre_lugar("Puerto 1").direccion("Rosario").empresa(emp1).build();
-            Establecimiento est2 = Establecimiento.builder().nombre_lugar("Acopio 2").direccion("Pergamino").empresa(emp2).build();
+            Establecimiento est1 = Establecimiento.builder().nombre_lugar("Puerto 1").direccion("Rosario").empresa(emp1).latitud(80.00).longitud(90.00).build();
+            Establecimiento est2 = Establecimiento.builder().nombre_lugar("Acopio 2").direccion("Pergamino").empresa(emp2).latitud(85.00).longitud(95.00).build();
             
             est1 = establecimientoRepository.saveAndFlush(est1);
             est2 = establecimientoRepository.saveAndFlush(est2);
@@ -101,8 +101,8 @@ public class DataSeed implements CommandLineRunner {
             cam2 = camionRepository.saveAndFlush(cam2);
 
             // 6. Envíos
-            Envio env1 = Envio.builder().cpe("CPE-001").origen(est2).destino(est1).chofer(cd1).camion(cam1).tipo_grano(Tipo_Grano.SOJA).estado_actual(Estado_Envio.PENDIENTE).prioridad_ia("ALTA").kg_origen(30000).build();
-            Envio env2 = Envio.builder().cpe("CPE-002").origen(est2).destino(est1).chofer(cd2).camion(cam2).tipo_grano(Tipo_Grano.MAIZ).estado_actual(Estado_Envio.PENDIENTE).prioridad_ia("MEDIA").kg_origen(28000).build();
+            Envio env1 = Envio.builder().cpe("CPE-001").origen(est2).destino(est1).chofer(cd1).camion(cam1).tipo_grano(Tipo_Grano.SOJA).estado_actual(Estado_Envio.PENDIENTE).prioridad_ia("ALTA").kg_origen(30000).distancia_km(80.00).build();
+            Envio env2 = Envio.builder().cpe("CPE-002").origen(est2).destino(est1).chofer(cd2).camion(cam2).tipo_grano(Tipo_Grano.MAIZ).estado_actual(Estado_Envio.PENDIENTE).prioridad_ia("MEDIA").kg_origen(28000).distancia_km(120.00).build();
             
             env1 = envioRepository.saveAndFlush(env1);
             env2 = envioRepository.saveAndFlush(env2);

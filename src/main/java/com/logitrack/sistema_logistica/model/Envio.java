@@ -37,6 +37,9 @@ public class Envio {
     @JoinColumn(name = "id_destino", referencedColumnName = "id_establecimiento")
     private Establecimiento destino;
 
+    @Column(name = "distancia_km")
+    private Double distancia_km;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_chofer", referencedColumnName = "id_chofer")
     private Chofer_Detalle chofer;
@@ -68,6 +71,9 @@ public class Envio {
     private LocalDateTime fecha_llegada;
     
     private LocalDateTime fecha_estimada_llegada;
+
+    @Column(columnDefinition = "TEXT")
+    private String comentarios;
 
     @PrePersist
     protected void onCreate() {

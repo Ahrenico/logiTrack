@@ -28,9 +28,9 @@ public class Establecimiento {
     @Column(name = "direccion", nullable = false, length = 255)
     private String direccion;
 
-    @Column(name = "latitud", precision = 10, scale = 7)
+    @Column(name = "latitud")
     private Double latitud;
 
-    @Column(name = "longitud", precision = 10, scale = 7)
+    @Column(name = "longitud")
     private Double longitud;
 }
