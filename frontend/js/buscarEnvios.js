@@ -35,13 +35,13 @@ async function buscar() {
     try {
         // Hacemos el GET al backend enviando el Token
         const res = await fetch(API_URL, { headers: authHeaders });
-        
+
         if (!res.ok) {
             // Si el token expiró, pateamos al usuario al login
             if (res.status === 401) window.location.href = "../index.html";
             throw new Error("Error al obtener los envíos");
         }
-        
+
         const envios = await res.json();
 
         // Filtrado lógico en el cliente
@@ -61,9 +61,10 @@ async function buscar() {
                 grano.toLowerCase().includes(query);
 
             // Normalizamos el Enum del backend (ej. "EN_TRANSITO") vs el Select ("En tránsito")
-            let estadoNormalizado = estadoFiltro.toUpperCase().replace(' ', '_');
-            if (estadoNormalizado === "EN_TRÁNSITO") estadoNormalizado = "EN_TRANSITO"; // Parche para el tilde
-            
+            let estadoNormalizado = estadoFiltro.toUpperCase().replaceAll(' ', '_');
+            if (estadoNormalizado === "EN_TRÁNSITO") estadoNormalizado = "EN_TRANSITO";
+            if (estadoNormalizado === "EN_PUNTO_DE_RECOLECCIÓN") estadoNormalizado = "EN_PUNTO_DE_RECOLECCION";
+
             const coincideEstado = estadoFiltro === "Cualquier Estado" || e.estado_actual === estadoNormalizado;
 
             return coincideQuery && coincideEstado;
@@ -81,7 +82,15 @@ async function buscar() {
             // Conversiones para la vista
             const nombreCliente = e.origen?.empresa?.razon_social || "Sin cliente";
             const pesoTn = e.kg_origen ? (e.kg_origen / 1000).toFixed(1) : "0";
-            const estadoFormateado = e.estado_actual ? e.estado_actual.replace('_', ' ') : "DESCONOCIDO";
+
+            // Formateo avanzado para soportar múltiples guiones bajos y capitalización
+            let estadoFormateado = "DESCONOCIDO";
+            if (e.estado_actual) {
+                estadoFormateado = e.estado_actual.replaceAll('_', ' ').toLowerCase();
+                estadoFormateado = estadoFormateado.charAt(0).toUpperCase() + estadoFormateado.slice(1);
+                if (estadoFormateado === "En transito") estadoFormateado = "En tránsito";
+                if (estadoFormateado === "En punto de recoleccion") estadoFormateado = "En punto de recolección";
+            }
 
             return `
             <tr>
@@ -125,12 +134,13 @@ function getEstadoClass(estadoEnum) {
     switch (estadoEnum) {
         case 'PENDIENTE': return 'bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle';
         case 'EN_TRANSITO': return 'bg-primary bg-opacity-10 text-primary border border-primary-subtle';
-        case 'EN_SUCURSAL': return 'bg-warning bg-opacity-10 text-warning-emphasis border border-warning-subtle';
+        case 'EN_PUNTO_DE_RECOLECCION': return 'bg-info bg-opacity-10 text-info border border-info-subtle';
+        case 'EN_REPARTO': return 'bg-warning bg-opacity-10 text-warning-emphasis border border-warning-subtle';
         case 'ENTREGADO': return 'bg-success bg-opacity-10 text-success border border-success-subtle';
+        case 'CANCELADO': return 'bg-danger bg-opacity-10 text-danger border border-danger-subtle';
         default: return 'bg-light text-dark border';
     }
 }
-
 // Evento: Enviar el formulario (Enter o Click en buscar)
 document.querySelector("form").addEventListener("submit", (e) => {
     e.preventDefault();
