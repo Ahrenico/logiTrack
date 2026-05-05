@@ -22,6 +22,136 @@
             color: #495057 !important;
             font-weight: 500;
         }
+
+        /* --- ESTILOS DEL TIMELINE LOGITRACK --- */
+        .timeline {
+            position: relative;
+            padding-left: 2.5rem;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* 1. ELIMINAMOS LA LÍNEA GLOBAL ANTIGUA */
+        .timeline::before {
+            display: none;
+            /* Apagamos la línea causante del desfase */
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 1. LÍNEA BASE EXACTA (Aplica a todos los pasos excepto el último) */
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: -2.25rem;
+            top: 2.5rem;
+            bottom: -2rem;
+            width: 3px;
+            background-color: #e9ecef;
+            /* Color gris por defecto */
+            transform: translateX(-50%);
+            z-index: 0;
+            transition: background-color 0.3s ease;
+            /* Transición suave de color */
+        }
+
+        /* 2. ESTADO COMPLETADO (Reutiliza la misma línea exacta y la pinta de verde) */
+        .timeline-item.completed:not(:last-child)::before {
+            background-color: #198754;
+            /* Sobreescribe el gris por verde */
+            z-index: 2;
+            /* Lo trae al frente */
+        }
+
+        /* 3. DESACTIVAMOS EL DIV PROBLEMÁTICO */
+        .timeline-line-active {
+            display: none !important;
+            /* Apaga el div del HTML para evitar conflictos */
+        }
+
+
+        /* El círculo con el icono */
+        /* Aseguramos que el ícono tenga z-index superior para estar por encima de las líneas */
+        .timeline-icon {
+            position: absolute;
+            left: -3.5rem;
+            top: 0;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border: 3px solid #e9ecef;
+            color: #adb5bd;
+            z-index: 3;
+            /* <--- Aseguramos que el círculo tape el inicio de la línea */
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        /* ESTADO: Completado */
+        .timeline-item.completed .timeline-icon {
+            border-color: #198754;
+            background-color: #198754;
+            color: #fff;
+        }
+
+        .timeline-item.completed .timeline-line-active {
+            position: absolute;
+            left: -2.55rem;
+            top: 2.5rem;
+            bottom: -2rem;
+            width: 3px;
+            background-color: #198754;
+            z-index: 0;
+        }
+
+        /* ESTADO: Activo (En tránsito actual) */
+        .timeline-item.active .timeline-icon {
+            border-color: #ffc107;
+            /* Color Warning de Bootstrap para destacar acción */
+            background-color: #ffc107;
+            color: #212529;
+            box-shadow: 0 0 0 0.4rem rgba(255, 193, 7, 0.3);
+            animation: pulse-warning 2s infinite;
+        }
+
+        /* Animación de pulso para el camión en movimiento */
+        @keyframes pulse-warning {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.6);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 193, 7, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
+            }
+        }
+
+        .timeline-content {
+            background-color: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.02);
+        }
+
+        .timeline-item.active .timeline-content {
+            border-color: rgba(255, 193, 7, 0.5);
+            box-shadow: 0 0.25rem 0.5rem rgba(255, 193, 7, 0.15);
+        }
     </style>
 </head>
 
@@ -123,6 +253,68 @@
                                         <label class="form-label small fw-bold text-muted text-uppercase">Tipo de
                                             Grano</label>
                                         <input type="text" class="form-control border-0" id="granoNombre" disabled>
+                                    </div>
+                                </div>
+
+                                <h6 class="fw-bold text-success mb-3 border-bottom pb-2">Estado del Recorrido</h6>
+                                <div class="row mb-5">
+                                    <div class="col-12">
+                                        <div class="timeline">
+
+                                            <div class="timeline-item completed">
+                                                <div class="timeline-icon">
+                                                    <i class="bi bi-clipboard-check"></i>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <h6 class="mb-0 fw-bold text-success">Pendiente - Carga Asignada
+                                                        </h6>
+                                                        <small class="text-muted fw-medium"><i
+                                                                class="bi bi-clock me-1"></i>08:30 AM</small>
+                                                    </div>
+                                                    <p class="text-muted small mb-0">Orden de carga registrada.
+                                                        Esperando camión en el origen.</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="timeline-item active">
+                                                <div class="timeline-icon">
+                                                    <i class="bi bi-truck"></i>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <h6 class="mb-0 fw-bold text-dark">En Tránsito</h6>
+                                                        <span class="badge bg-warning text-dark small">Actual</span>
+                                                    </div>
+                                                    <p class="text-muted small mb-0">El camión ha salido del
+                                                        establecimiento origen y se encuentra en ruta con los granos.
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div class="timeline-item">
+                                                <div class="timeline-icon">
+                                                    <i class="bi bi-buildings"></i>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <h6 class="mb-1 fw-bold text-muted">En Sucursal / Acopio</h6>
+                                                    <p class="text-muted small mb-0 opacity-75">Llegada a planta,
+                                                        control de calidad (calado) y pesaje en balanza.</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="timeline-item">
+                                                <div class="timeline-icon">
+                                                    <i class="bi bi-flag"></i>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <h6 class="mb-1 fw-bold text-muted">Entregado</h6>
+                                                    <p class="text-muted small mb-0 opacity-75">Descarga de granos
+                                                        completada en destino de forma exitosa.</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
                                     </div>
                                 </div>
 
