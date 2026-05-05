@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/envios/**").permitAll()
                 .requestMatchers("/api/catalogos/**").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
@@ -79,10 +80,11 @@ public class SecurityConfig {
         configuration.setAllowCredentials(false);
         
         // 2. Al estar en false, PODEMOS usar el comodín global
-        configuration.setAllowedOrigins(Arrays.asList("*")); 
+        configuration.setAllowedOrigins(Arrays.asList("*", 
+            "https://logritrack-agro-test-develop.netlify.app/")); 
         
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

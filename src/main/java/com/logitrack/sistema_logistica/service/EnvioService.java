@@ -79,4 +79,55 @@ public class EnvioService {
     public List<Historial_Estados> obtenerHistorialPorEnvio(String idEnvio) {
     return historialRepository.buscarHistorialPorEnvio(idEnvio);
 }
+ @Transactional // Garantiza que si falla el historial, no se guarde el envío a medias
+        public Envio actualizarEstadoYPrioridad(String idEnvio, String nuevoEstadoStr, String nuevaPrioridad,
+                        Usuario usuarioModificador) {
+
+                // 1. Buscar el envío existente por su ID principal (LT-XXXXXX)
+                Envio envio = envioRepository.findById(idEnvio)
+                                .orElseThrow(() -> new RuntimeException("No se encontró el envío con ID: " + idEnvio));
+
+                // 2. Capturar el estado actual antes de modificarlo para el historial
+                Estado_Envio estadoAnterior = envio.getEstado_actual();
+
+                // Convertir el String que viene del DTO/Frontend al Enum de Java
+                Estado_Envio estadoNuevo = Estado_Envio.valueOf(nuevoEstadoStr);
+
+                // 3. Verificar qué datos cambiaron realmente
+                boolean estadoCambio = !estadoAnterior.equals(estadoNuevo);
+                boolean prioridadCambio = (nuevaPrioridad != null && !nuevaPrioridad.equals(envio.getPrioridad_ia()));
+
+                // Si no hubo cambios reales, simplemente devolvemos el envío tal cual
+                if (!estadoCambio && !prioridadCambio) {
+                        return envio;
+                }
+
+                // 4. Actualizar los valores en el objeto Envio
+                if (estadoCambio) {
+                        envio.setEstado_actual(estadoNuevo);
+                }
+                if (prioridadCambio) {
+                        envio.setPrioridad_ia(nuevaPrioridad);
+                }
+
+                // 5. Guardar el envío actualizado
+                Envio envioGuardado = envioRepository.save(envio);
+
+                // 6. Generar el registro de Auditoría SOLO si el estado logístico cambió
+                if (estadoCambio) {
+                        Historial_Estados historial = Historial_Estados.builder()
+                                        .envio(envioGuardado)
+                                        .usuario(usuarioModificador)
+                                        .estado_anterior(estadoAnterior)
+                                        .estado_nuevo(estadoNuevo)
+                                        // La fecha_hora se genera sola por el @PrePersist en tu modelo
+                                        .build();
+
+                        historialEstadosRepository.save(historial);
+                }
+
+                return envioGuardado;
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////
 }
+  
