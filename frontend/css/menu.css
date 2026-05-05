@@ -1,0 +1,11 @@
+/* Efecto hover suave para las tarjetas del menú */
+.card-menu {
+    transition: all 0.3s ease;
+}
+
+.card-menu:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, .15) !important;
+    border-color: #198754 !important;
+    /* Borde verde al pasar el mouse */
+}

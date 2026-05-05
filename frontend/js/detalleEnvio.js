@@ -51,18 +51,18 @@ function aplicarPermisosSegunRol() {
 
 // ─── AYUDANTES PARA FORMATEAR ENUMS DE JAVA ───
 function normalizarEnum(valorEnum) {
-    if(!valorEnum) return "Sin determinar";
+    if (!valorEnum) return "Sin determinar";
     // De "EN_TRANSITO" a "En tránsito"
     let texto = valorEnum.replace('_', ' ').toLowerCase();
     texto = texto.charAt(0).toUpperCase() + texto.slice(1);
-    if(texto === "En transito") return "En tránsito";
+    if (texto === "En transito") return "En tránsito";
     return texto;
 }
 
 function enumParaJava(textoSelect) {
     // De "En tránsito" a "EN_TRANSITO"
     let texto = textoSelect.toUpperCase().replace(' ', '_');
-    if(texto === "EN_TRÁNSITO") return "EN_TRANSITO";
+    if (texto === "EN_TRÁNSITO") return "EN_TRANSITO";
     return texto;
 }
 
@@ -82,13 +82,13 @@ async function cargarDetalle() {
         // Mapeo contra las propiedades reales de tu clase Envio.java
         document.getElementById("trackingId").textContent = envio.id_envio;
         document.getElementById("clienteNombre").value = envio.origen?.empresa?.razon_social || "No especificado";
-        
+
         document.getElementById("origenNombre").value = envio.origen?.nombre_lugar || "No especificado";
         document.getElementById("destinoNombre").value = envio.destino?.nombre_lugar || "No especificado";
 
         // Distancia no viene en el backend, se asume 0 por ahora o se elimina
-        document.getElementById("distanciaKm").textContent = "N/A"; 
-        
+        document.getElementById("distanciaKm").textContent = "N/A";
+
         // Convertir de KG a Toneladas
         const pesoTn = envio.kg_origen ? (envio.kg_origen / 1000).toFixed(1) : 0;
         document.getElementById("peso").value = pesoTn;
@@ -104,6 +104,9 @@ async function cargarDetalle() {
         estadoOriginal = estadoFormateado;
         prioridadOriginal = prioridadFormateada;
 
+        // ¡NUEVO! Actualizamos la interfaz del timeline con el estado real
+        actualizarTimelineVisual(envio.estado_actual);
+
         aplicarPermisosSegunRol();
         await cargarHistorial();
 
@@ -117,7 +120,7 @@ async function cargarDetalle() {
 // ─── CARGAR HISTORIAL DE AUDITORÍA ───
 async function cargarHistorial() {
     const tbody = document.getElementById("tbodyHistorial");
-    
+
     try {
         const response = await fetch(`${API_URL}/${id}/historial`, { headers: authHeaders });
         if (!response.ok) throw new Error("Error al obtener registros");
@@ -133,11 +136,11 @@ async function cargarHistorial() {
             // Parseo de la fecha (LocalDateTime) que devuelve Java
             const fecha = reg.fecha_hora ? new Date(reg.fecha_hora) : null;
             const fechaStr = fecha ? fecha.toLocaleDateString("es-AR") : "—";
-            const horaStr = fecha ? fecha.toLocaleTimeString("es-AR", {hour: '2-digit', minute:'2-digit'}) : "—";
-            
+            const horaStr = fecha ? fecha.toLocaleTimeString("es-AR", { hour: '2-digit', minute: '2-digit' }) : "—";
+
             // Construir la descripción del evento
             let eventoTexto = `Cambio a ${normalizarEnum(reg.estado_nuevo)}`;
-            if(reg.estado_anterior) {
+            if (reg.estado_anterior) {
                 eventoTexto = `De ${normalizarEnum(reg.estado_anterior)} a ${normalizarEnum(reg.estado_nuevo)}`;
             }
 
@@ -199,6 +202,54 @@ form.addEventListener("submit", function (e) {
     e.preventDefault();
     editarEnvio();
 });
+
+// ─── LÓGICA DEL TIMELINE VISUAL ───
+function actualizarTimelineVisual(estadoBackend) {
+    // 1. Normalizamos el estado que viene de Java (ej. de "EN_TRANSITO" a "En tránsito")
+    const estadoActual = normalizarEnum(estadoBackend);
+
+    // 2. Definimos el orden lógico de los pasos en la ruta logística
+    const ordenEstados = ["Pendiente", "En tránsito", "En sucursal", "Entregado"];
+    const indiceActual = ordenEstados.indexOf(estadoActual);
+
+    // 3. Obtenemos todos los pasos dibujados en el HTML
+    const items = document.querySelectorAll(".timeline-item");
+
+    items.forEach((item, index) => {
+        // Limpiamos los estados previos y badges del HTML
+        item.classList.remove("completed", "active");
+        const badgeViejo = item.querySelector(".badge");
+        if (badgeViejo) badgeViejo.remove();
+
+        const titulo = item.querySelector("h6");
+        const contenedorTitulo = titulo.parentElement;
+        titulo.classList.remove("text-success", "text-dark", "text-muted");
+
+        // 4. Asignamos clases dinámicamente según dónde está el camión
+        if (index < indiceActual) {
+            // PASO COMPLETADO (El camión ya pasó por aquí)
+            item.classList.add("completed");
+            titulo.classList.add("text-success");
+
+        } else if (index === indiceActual) {
+            // PASO ACTUAL (El camión está aquí ahora mismo)
+            item.classList.add("active");
+            titulo.classList.add("text-dark");
+
+            // Creamos el badge "Actual" visualmente
+            const badgeHTML = '<span class="badge bg-warning text-dark small ms-2">Actual</span>';
+            if (contenedorTitulo.classList.contains("d-flex")) {
+                contenedorTitulo.insertAdjacentHTML('beforeend', badgeHTML);
+            } else {
+                titulo.insertAdjacentHTML('beforeend', badgeHTML);
+            }
+
+        } else {
+            // PASO FUTURO (El camión aún no llega)
+            titulo.classList.add("text-muted");
+        }
+    });
+}
 
 // Inicializar
 cargarDetalle();

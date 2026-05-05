@@ -1,0 +1,16 @@
+/* Estilos para errores de PristineJS */
+.has-danger .form-control,
+.has-danger .form-select {
+    border: 1px solid #dc3545 !important;
+    background-color: #fff8f8 !important;
+}
+
+.text-danger.small {
+    font-weight: 500;
+}
+
+/* Efecto hover para la lista de búsqueda de clientes */
+.cliente-item:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
