@@ -53,16 +53,18 @@ function aplicarPermisosSegunRol() {
 function normalizarEnum(valorEnum) {
     if (!valorEnum) return "Sin determinar";
     // De "EN_TRANSITO" a "En tránsito"
-    let texto = valorEnum.replace('_', ' ').toLowerCase();
+    let texto = valorEnum.replaceAll('_', ' ').toLowerCase();
     texto = texto.charAt(0).toUpperCase() + texto.slice(1);
     if (texto === "En transito") return "En tránsito";
+    if (texto === "En punto de recoleccion") return "En punto de recolección";
     return texto;
 }
 
 function enumParaJava(textoSelect) {
     // De "En tránsito" a "EN_TRANSITO"
-    let texto = textoSelect.toUpperCase().replace(' ', '_');
+    let texto = textoSelect.toUpperCase().replaceAll(' ', '_');
     if (texto === "EN_TRÁNSITO") return "EN_TRANSITO";
+    if (texto === "EN_PUNTO_DE_RECOLECCIÓN") return "EN_PUNTO_DE_RECOLECCION";
     return texto;
 }
 
@@ -133,13 +135,25 @@ async function cargarHistorial() {
         }
 
         tbody.innerHTML = registros.map(reg => {
-            // Parseo de la fecha (LocalDateTime) que devuelve Java
-            const fecha = reg.fecha_hora ? new Date(reg.fecha_hora) : null;
+            // Parseo de la fecha (LocalDateTime) que devuelve Java forzando la interpretación en UTC
+            let fecha = null;
+            if (reg.fecha_hora) {
+                let fechaString = reg.fecha_hora;
+                // Si el backend no envía la 'Z' de UTC, se la agregamos artificialmente
+                if (!fechaString.endsWith('Z')) {
+                    fechaString += 'Z';
+                }
+                fecha = new Date(fechaString);
+            }
+
+            // JavaScript convertirá automáticamente la fecha UTC a la zona horaria local del navegador (Argentina)
             const fechaStr = fecha ? fecha.toLocaleDateString("es-AR") : "—";
             const horaStr = fecha ? fecha.toLocaleTimeString("es-AR", { hour: '2-digit', minute: '2-digit' }) : "—";
 
+
             // Construir la descripción del evento
-            let eventoTexto = `Cambio a ${normalizarEnum(reg.estado_nuevo)}`;
+            // let eventoTexto = `Cambio a ${normalizarEnum(reg.estado_nuevo)}`;
+            let eventoTexto = `Envío creado y puesto en Pendiente`;
             if (reg.estado_anterior) {
                 eventoTexto = `De ${normalizarEnum(reg.estado_anterior)} a ${normalizarEnum(reg.estado_nuevo)}`;
             }
@@ -187,7 +201,9 @@ async function editarEnvio() {
         if (!response.ok) throw new Error(await response.text());
 
         await Swal.fire({ icon: "success", title: "Operación actualizada", showConfirmButton: false, timer: 1500 });
-        window.location.href = "./busqueda.html";
+        
+        // Recarga la página actual para mostrar los datos y el historial actualizados
+        window.location.reload();
 
     } catch (error) {
         console.error(error);
@@ -209,7 +225,11 @@ function actualizarTimelineVisual(estadoBackend) {
     const estadoActual = normalizarEnum(estadoBackend);
 
     // 2. Definimos el orden lógico de los pasos en la ruta logística
-    const ordenEstados = ["Pendiente", "En tránsito", "En sucursal", "Entregado"];
+    const ordenEstados = ["Pendiente", "En tránsito", "En punto de recolección", "En reparto", "Entregado"];
+
+    // (Nota: 'Cancelado' no se incluye en el flujo lineal, ya que es una excepción. 
+    // Si el índice es -1, la línea de tiempo simplemente quedará en gris, lo cual es correcto).
+
     const indiceActual = ordenEstados.indexOf(estadoActual);
 
     // 3. Obtenemos todos los pasos dibujados en el HTML
