@@ -196,7 +196,31 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <!-- === INICIO CONTROLES DE PAGINACIÓN (NUEVO) === -->
+                            <div class="bg-light border-top p-3 d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3"
+                                id="paginationContainer">
+                                <span class="small text-muted fw-medium" id="paginationInfo">Mostrando página 1 de
+                                    1</span>
+                                <nav aria-label="Navegación de resultados">
+                                    <ul class="pagination pagination-sm mb-0 shadow-sm">
+                                        <li class="page-item" id="liPrevPage">
+                                            <button class="page-link text-success focus-ring focus-ring-success"
+                                                id="btnPrevPage">
+                                                <i class="bi bi-chevron-left me-1"></i>Anterior
+                                            </button>
+                                        </li>
+                                        <li class="page-item" id="liNextPage">
+                                            <button class="page-link text-success focus-ring focus-ring-success"
+                                                id="btnNextPage">
+                                                Siguiente<i class="bi bi-chevron-right ms-1"></i>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <!-- === FIN CONTROLES DE PAGINACIÓN === -->
                         </div>
+
 
                         <div class="card border-0 shadow-sm rounded-4 p-5 text-center d-none bg-danger bg-opacity-10"
                             id="noResultsTable">
