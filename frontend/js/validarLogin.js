@@ -55,4 +55,13 @@ async function login() {
     }
 }
 
-document.getElementById("btnIngresar").addEventListener("click", login);
+// Eliminamos: document.getElementById("btnIngresar").addEventListener("click", login);
+
+// Agregamos el event listener al formulario
+document.getElementById("loginForm").addEventListener("submit", function(event) {
+    // Es CRÍTICO prevenir el comportamiento por defecto (que recarga la página)
+    event.preventDefault(); 
+    
+    // Llamamos a tu función asíncrona existente
+    login();
+});

@@ -29,7 +29,7 @@
                     class="col-lg-7 d-none d-lg-flex flex-column justify-content-between p-5 bg-agro-gradient text-white">
                     <div class="d-flex align-items-center gap-3">
                         <!-- <i class="bi bi-truck-flatbed fs-1 text-warning"></i> -->
-                         <img src="img/logo-white.png" alt="Logo" height="50">
+                        <img src="img/logo-white.png" alt="Logo" height="50">
                         <span class="fs-3 fw-bold tracking-tight">LogiTrack Agro</span>
                     </div>
 
@@ -87,7 +87,7 @@
                     <div class="w-100 px-4 px-md-5" style="max-width: 500px;">
 
                         <div class="d-lg-none text-center mb-4">
-                         <img src="img/logo-logitrack.png" alt="Logo" height="100">
+                            <img src="img/logo-logitrack.png" alt="Logo" height="100">
                         </div>
 
                         <div class="mb-3">
@@ -95,7 +95,8 @@
                             <p class="text-muted">Ingrese sus credenciales para acceder a la plataforma de gestión.</p>
                         </div>
 
-                        <form>
+                        <!-- Agregamos el id="loginForm" al formulario -->
+                        <form id="loginForm">
                             <div class="mb-4">
                                 <label for="exampleInputEmail1"
                                     class="form-label small fw-bold text-uppercase text-muted">Email</label>
@@ -108,10 +109,6 @@
                             </div>
 
                             <div class="mb-4">
-                                <!-- <div class="d-flex justify-content-between">
-                                    <label for="exampleInputPassword1" class="form-label small fw-bold text-uppercase text-muted">Contraseña</label>
-                                    <a href="#" class="small text-success fw-semibold text-decoration-none">¿Olvidó su contraseña?</a>
-                                </div> -->
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0 text-muted"><i
                                             class="bi bi-shield-lock"></i></span>
@@ -119,11 +116,6 @@
                                         id="exampleInputPassword1" placeholder="••••••••">
                                 </div>
                             </div>
-
-                            <!-- <div class="mb-4 form-check">
-                                <input type="checkbox" class="form-check-input" id="rememberMe">
-                                <label class="form-check-label small text-muted" for="rememberMe">Recordar mi sesión en este equipo</label>
-                            </div> -->
 
                             <div id="mensajeError"
                                 class="alert alert-danger d-none border-0 shadow-sm rounded-3 py-2 mb-4" role="alert">
@@ -133,15 +125,12 @@
                                 </div>
                             </div>
 
-                            <button type="button"
+                            <!-- Cambiamos type="button" por type="submit" -->
+                            <button type="submit"
                                 class="btn btn-success w-100 py-3 fw-bold rounded-3 shadow-sm border-0 mb-4"
                                 id="btnIngresar" style="background: linear-gradient(45deg, #1b4332, #2d6a4f);">
                                 INGRESAR AL SISTEMA <i class="bi bi-arrow-right ms-2"></i>
                             </button>
-
-                            <!-- <div class="text-center">
-                                <span class="small text-muted">¿Necesita asistencia técnica? <a href="#" class="text-success fw-bold">Contactar Soporte</a></span>
-                            </div> -->
                         </form>
                     </div>
                 </div>
