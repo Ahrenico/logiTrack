@@ -201,7 +201,9 @@ async function editarEnvio() {
         if (!response.ok) throw new Error(await response.text());
 
         await Swal.fire({ icon: "success", title: "Operación actualizada", showConfirmButton: false, timer: 1500 });
-        window.location.href = "./busqueda.html";
+        
+        // Recarga la página actual para mostrar los datos y el historial actualizados
+        window.location.reload();
 
     } catch (error) {
         console.error(error);
