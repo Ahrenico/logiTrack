@@ -33,69 +33,41 @@ async function buscar() {
     emptyTable.classList.add("d-none");
     resultsTable.classList.remove("d-none");
     noResultsTable.classList.add("d-none");
-
     try {
-        // Hacemos el GET al backend enviando el Token
-        const res = await fetch(API_URL, { headers: authHeaders });
+        // 1. Armar la URL con los parámetros
+        // Modificamos la URL para apuntar al nuevo endpoint paginado
+        const urlParams = new URLSearchParams();
+        if (query) urlParams.append("query", query);
+        if (estadoFiltro) urlParams.append("estado", estadoFiltro);
+        if (fechaFiltro) urlParams.append("fecha", fechaFiltro);
+
+        // Puedes agregar page y size aquí en el futuro (ej: urlParams.append("page", 0))
+
+        const res = await fetch(`${API_URL}/busqueda-avanzada?${urlParams.toString()}`, {
+            headers: authHeaders
+        });
 
         if (!res.ok) {
-            // Si el token expiró, pateamos al usuario al login
             if (res.status === 401) window.location.href = "../index.html";
             throw new Error("Error al obtener los envíos");
         }
 
-        const envios = await res.json();
+        // 2. Spring Data Page devuelve los arrays dentro de la propiedad "content"
+        const dataPaginada = await res.json();
+        const envios = dataPaginada.content;
 
-// Filtrado lógico en el cliente
-        const filtrados = envios.filter(e => {
-            // 1. Filtro de Búsqueda por Texto
-            const idEnvio = e.id_envio || "";
-            const ctg = e.tracking_ctg || "";
-            const cliente = e.origen?.empresa?.razon_social || "";
-            const destino = e.destino?.empresa?.razon_social || "";
-            const grano = e.tipo_grano || "";
-
-            const coincideQuery =
-                idEnvio.toLowerCase().includes(query) ||
-                ctg.toLowerCase().includes(query) ||
-                cliente.toLowerCase().includes(query) ||
-                destino.toLowerCase().includes(query) ||
-                grano.toLowerCase().includes(query);
-
-            // 2. Normalizamos el Enum del backend (ej. "EN_TRANSITO") vs el Select ("En tránsito")
-            let estadoNormalizado = estadoFiltro.toUpperCase().replaceAll(' ', '_');
-            if (estadoNormalizado === "EN_TRÁNSITO") estadoNormalizado = "EN_TRANSITO";
-            if (estadoNormalizado === "EN_PUNTO_DE_RECOLECCIÓN") estadoNormalizado = "EN_PUNTO_DE_RECOLECCION";
-            
-            const coincideEstado = estadoFiltro === "Cualquier Estado" || e.estado_actual === estadoNormalizado;
-
-            // 3. Filtro de Fecha (NUEVO)
-            let coincideFecha = true;
-            if (fechaFiltro) {
-
-                // Usamos split('T')[0] para separar "2026-05-05T18:00:00" y quedarnos solo con "2026-05-05"
-                const fechaEnvio = e.fecha_creacion ? e.fecha_creacion.split('T')[0] : "";
-                coincideFecha = (fechaEnvio === fechaFiltro);
-            }
-
-            // Retorna verdadero solo si cumple los 3 criterios
-            return coincideQuery && coincideEstado && coincideFecha;
-        });
-
-        // Manejo de sin resultados
-        if (filtrados.length === 0) {
+        // 3. Manejo de sin resultados
+        if (envios.length === 0) {
             resultsTable.classList.add("d-none");
             noResultsTable.classList.remove("d-none");
             return;
         }
 
-        // Dibujar filas mapeando la clase Envio.java
-        tbody.innerHTML = filtrados.map(e => {
-            // Conversiones para la vista
+        // 4. Dibujar filas directamente (¡Adiós a la lógica de filtrado pesado en JS!)
+        tbody.innerHTML = envios.map(e => {
             const nombreCliente = e.origen?.empresa?.razon_social || "Sin cliente";
             const pesoTn = e.kg_origen ? (e.kg_origen / 1000).toFixed(1) : "0";
 
-            // Formateo avanzado para soportar múltiples guiones bajos y capitalización
             let estadoFormateado = "DESCONOCIDO";
             if (e.estado_actual) {
                 estadoFormateado = e.estado_actual.replaceAll('_', ' ').toLowerCase();
