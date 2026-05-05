@@ -3,8 +3,9 @@ const API_URL = `${API_BASE_URL}/auth/login`;
 
 async function login() {
     // 1. Capturamos los valores del HTML
-    // Nota: Aunque el HTML dice "Email", el backend espera que la variable se llame "username"
-    const inputUsername = document.getElementById("exampleInputEmail1").value.trim();
+    // const inputUsername = document.getElementById("exampleInputEmail1").value.trim();
+
+    const inputUsername = document.getElementById("inputUsername").value.trim();
     const inputPassword = document.getElementById("exampleInputPassword1").value.trim();
     const mensajeError = document.getElementById("mensajeError");
 
@@ -42,7 +43,7 @@ async function login() {
                 username: data.username,
                 rol: data.rol
             }));
-            
+
             // Redirigimos al menú principal
             window.location.href = "./views/menu.html";
         }
@@ -58,10 +59,10 @@ async function login() {
 // Eliminamos: document.getElementById("btnIngresar").addEventListener("click", login);
 
 // Agregamos el event listener al formulario
-document.getElementById("loginForm").addEventListener("submit", function(event) {
+document.getElementById("loginForm").addEventListener("submit", function (event) {
     // Es CRÍTICO prevenir el comportamiento por defecto (que recarga la página)
-    event.preventDefault(); 
-    
+    event.preventDefault();
+
     // Llamamos a tu función asíncrona existente
     login();
 });
