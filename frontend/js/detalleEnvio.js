@@ -133,10 +133,21 @@ async function cargarHistorial() {
         }
 
         tbody.innerHTML = registros.map(reg => {
-            // Parseo de la fecha (LocalDateTime) que devuelve Java
-            const fecha = reg.fecha_hora ? new Date(reg.fecha_hora) : null;
+            // Parseo de la fecha (LocalDateTime) que devuelve Java forzando la interpretación en UTC
+            let fecha = null;
+            if (reg.fecha_hora) {
+                let fechaString = reg.fecha_hora;
+                // Si el backend no envía la 'Z' de UTC, se la agregamos artificialmente
+                if (!fechaString.endsWith('Z')) {
+                    fechaString += 'Z';
+                }
+                fecha = new Date(fechaString);
+            }
+
+            // JavaScript convertirá automáticamente la fecha UTC a la zona horaria local del navegador (Argentina)
             const fechaStr = fecha ? fecha.toLocaleDateString("es-AR") : "—";
             const horaStr = fecha ? fecha.toLocaleTimeString("es-AR", { hour: '2-digit', minute: '2-digit' }) : "—";
+
 
             // Construir la descripción del evento
             // let eventoTexto = `Cambio a ${normalizarEnum(reg.estado_nuevo)}`;
