@@ -139,7 +139,8 @@ async function cargarHistorial() {
             const horaStr = fecha ? fecha.toLocaleTimeString("es-AR", { hour: '2-digit', minute: '2-digit' }) : "—";
 
             // Construir la descripción del evento
-            let eventoTexto = `Cambio a ${normalizarEnum(reg.estado_nuevo)}`;
+            // let eventoTexto = `Cambio a ${normalizarEnum(reg.estado_nuevo)}`;
+            let eventoTexto = `Envío creado y puesto en Pendiente`;
             if (reg.estado_anterior) {
                 eventoTexto = `De ${normalizarEnum(reg.estado_anterior)} a ${normalizarEnum(reg.estado_nuevo)}`;
             }
