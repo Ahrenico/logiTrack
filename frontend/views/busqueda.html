@@ -58,18 +58,7 @@
                                 Origen/Destino o Tipo de Grano.</p>
 
                             <form>
-                                <div class="row g-3 align-items-end ms-md-4">
-                                    <!-- <div class="col-12 col-md-5">
-                                        <label class="form-label small fw-bold text-uppercase text-muted">Parámetro de
-                                            búsqueda</label>
-                                        <div class="input-group shadow-sm rounded-3">
-                                            <span class="input-group-text bg-light border-0"><i
-                                                    class="bi bi-upc-scan text-muted"></i></span>
-                                            <input type="text"
-                                                class="form-control bg-light border-0 ps-0 focus-ring focus-ring-success py-2"
-                                                id="searchInput" placeholder="ID Rastreo o Destino">
-                                        </div>
-                                    </div> -->
+                                <!-- <div class="row g-3 align-items-end ms-md-4">
                                     <div class="col-12 col-md-12">
                                         <label for="searchInput"
                                             class="form-label small fw-bold text-uppercase text-muted">Término de
@@ -107,6 +96,67 @@
                                             <i class="bi bi-eraser-fill"></i>
                                         </button>
                                         <button type="submit" class="btn btn-success shadow-sm py-2 w-100 fw-bold"
+                                            style="background: linear-gradient(45deg, #1b4332, #2d6a4f); border: none;">
+                                            Buscar
+                                        </button>
+                                    </div>
+                                </div> -->
+                                <div class="row g-3 align-items-end ms-md-4">
+                                    <!-- Fila 1: Buscador de texto -->
+                                    <div class="col-12 col-md-12">
+                                        <label for="searchInput"
+                                            class="form-label small fw-bold text-uppercase text-muted">Término de
+                                            búsqueda</label>
+                                        <div
+                                            class="input-group shadow-sm rounded-3 mb-2 border border-success border-opacity-25">
+                                            <span class="input-group-text bg-white border-0"><i
+                                                    class="bi bi-search text-success"></i></span>
+                                            <input type="text" id="searchInput"
+                                                class="form-control bg-white border-0 ps-0 focus-ring focus-ring-success py-2"
+                                                placeholder="Ej: LT-001, 89456123, Los Grobo, Rosario, Soja..."
+                                                autocomplete="off">
+                                        </div>
+                                    </div>
+
+                                    <!-- Fila 2, Columna 1: Selector de Estado -->
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label small fw-bold text-uppercase text-muted">Estado
+                                            Operativo</label>
+                                        <select
+                                            class="form-select bg-light border-0 shadow-sm focus-ring focus-ring-success py-2"
+                                            id="stateSelect">
+                                            <option selected>Cualquier Estado</option>
+                                            <option>Pendiente</option>
+                                            <option>En tránsito</option>
+                                            <option>En punto de recolección</option>
+                                            <option>En reparto</option>
+                                            <option>Entregado</option>
+                                            <option>Cancelado</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Fila 2, Columna 2: Selector de Fecha (NUEVO) -->
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label small fw-bold text-uppercase text-muted">Fecha de
+                                            Operación</label>
+                                        <div class="input-group shadow-sm rounded-3">
+                                            <span class="input-group-text bg-light border-0"><i
+                                                    class="bi bi-calendar-event text-success"></i></span>
+                                            <!-- Al usar type="date", el navegador genera el calendario automáticamente -->
+                                            <input type="date"
+                                                class="form-control bg-light border-0 ps-0 focus-ring focus-ring-success py-2 text-muted"
+                                                id="dateSelect">
+                                        </div>
+                                    </div>
+
+                                    <!-- Fila 2, Columna 3: Botones -->
+                                    <div class="col-12 col-md-4 d-flex gap-2">
+                                        <button type="reset"
+                                            class="btn btn-light border-0 shadow-sm py-2 px-3 text-muted w-25"
+                                            title="Limpiar filtros">
+                                            <i class="bi bi-eraser-fill"></i>
+                                        </button>
+                                        <button type="submit" class="btn btn-success shadow-sm py-2 w-75 fw-bold"
                                             style="background: linear-gradient(45deg, #1b4332, #2d6a4f); border: none;">
                                             Buscar
                                         </button>

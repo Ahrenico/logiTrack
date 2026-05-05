@@ -11,6 +11,7 @@ const authHeaders = {
 // Referencias al DOM
 const searchInput = document.getElementById("searchInput");
 const stateSelect = document.getElementById("stateSelect");
+const dateSelect = document.getElementById("dateSelect");
 const resultsTable = document.getElementById("resultsTable");
 const tbody = resultsTable.querySelector("tbody");
 const emptyTable = document.getElementById("emptyTable");
@@ -22,6 +23,7 @@ const btnLimpiar = document.querySelector("form button[type='reset']");
 async function buscar() {
     const query = searchInput.value.trim().toLowerCase();
     const estadoFiltro = stateSelect.value; // Ej: "En tránsito"
+    const fechaFiltro = dateSelect.value; // NUEVO: Captura la fecha en formato "YYYY-MM-DD"
 
     // Estado visual de carga
     btnBuscar.disabled = true;
@@ -44,9 +46,9 @@ async function buscar() {
 
         const envios = await res.json();
 
-        // Filtrado lógico en el cliente
+// Filtrado lógico en el cliente
         const filtrados = envios.filter(e => {
-            // Extraemos los datos previniendo que vengan nulos (Optional Chaining '?')
+            // 1. Filtro de Búsqueda por Texto
             const idEnvio = e.id_envio || "";
             const ctg = e.tracking_ctg || "";
             const cliente = e.origen?.empresa?.razon_social || "";
@@ -60,14 +62,24 @@ async function buscar() {
                 destino.toLowerCase().includes(query) ||
                 grano.toLowerCase().includes(query);
 
-            // Normalizamos el Enum del backend (ej. "EN_TRANSITO") vs el Select ("En tránsito")
+            // 2. Normalizamos el Enum del backend (ej. "EN_TRANSITO") vs el Select ("En tránsito")
             let estadoNormalizado = estadoFiltro.toUpperCase().replaceAll(' ', '_');
             if (estadoNormalizado === "EN_TRÁNSITO") estadoNormalizado = "EN_TRANSITO";
             if (estadoNormalizado === "EN_PUNTO_DE_RECOLECCIÓN") estadoNormalizado = "EN_PUNTO_DE_RECOLECCION";
-
+            
             const coincideEstado = estadoFiltro === "Cualquier Estado" || e.estado_actual === estadoNormalizado;
 
-            return coincideQuery && coincideEstado;
+            // 3. Filtro de Fecha (NUEVO)
+            let coincideFecha = true;
+            if (fechaFiltro) {
+
+                // Usamos split('T')[0] para separar "2026-05-05T18:00:00" y quedarnos solo con "2026-05-05"
+                const fechaEnvio = e.fecha_creacion ? e.fecha_creacion.split('T')[0] : "";
+                coincideFecha = (fechaEnvio === fechaFiltro);
+            }
+
+            // Retorna verdadero solo si cumple los 3 criterios
+            return coincideQuery && coincideEstado && coincideFecha;
         });
 
         // Manejo de sin resultados
