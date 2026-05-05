@@ -27,8 +27,6 @@ import com.logitrack.sistema_logistica.repository.Historial_EstadosRepository;
 import com.logitrack.sistema_logistica.repository.UsuarioRepository;
 import org.springframework.security.core.Authentication;
 
-import org.springframework.data.domain.Page;
-
 @RestController
 @RequestMapping("/api/envios")
 public class EnvioController {
@@ -264,16 +262,4 @@ public class EnvioController {
         return ResponseEntity.ok(respuesta);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @GetMapping("/busqueda-avanzada")
-    public ResponseEntity<Page<Envio>> buscarEnviosAvanzado(
-            @RequestParam(required = false) String query,
-            @RequestParam(required = false) String estado,
-            @RequestParam(required = false) String fecha,
-            @RequestParam(defaultValue = "0") int page, // Página inicial (0-indexed)
-            @RequestParam(defaultValue = "20") int size // Límite de resultados por página
-    ) {
-        Page<Envio> resultados = envioService.buscarEnviosAvanzado(query, estado, fecha, page, size);
-        return ResponseEntity.ok(resultados);
-    }
 }
