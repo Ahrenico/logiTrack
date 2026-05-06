@@ -73,21 +73,32 @@ async function cargarHistorialDeCambios() {
             const horaStr = fecha ? fecha.toLocaleTimeString("es-AR", { hour: '2-digit', minute: '2-digit' }) : "—";
 
             // Construimos la descripción
-            const descModificacion = `Cambio: <b>${formatearEstado(estAnterior)}</b> <i class="bi bi-arrow-right mx-1 text-muted"></i> <b>${formatearEstado(estNuevo)}</b>`;
+            const descModificacion = `<b>${formatearEstado(estAnterior)}</b> <i class="bi bi-arrow-right mx-1 text-muted"></i> <b>${formatearEstado(estNuevo)}</b>`;
+            // const descModificacion = `Cambio: <b>${formatearEstado(estAnterior)}</b> <i class="bi bi-arrow-right mx-1 text-muted"></i> <b>${formatearEstado(estNuevo)}</b>`;
 
             return `
                 <tr>
-                    <td class="ps-4 small fw-bold text-muted">#${idRegistro}</td>
-                    <td class="small">
+                    <td data-label="ID Reg." class="ps-md-4 small fw-bold text-muted text-end text-md-start">
+                        #${idRegistro}
+                    </td>
+                    <td data-label="ID Rastreo" class="small text-end text-md-start">
                         <a href="./detalleEnvio.html?id=${idRastreo}" class="text-decoration-none fw-bold text-success">
                             ${idRastreo}
                         </a>
                     </td>
-                    <td class="small">${descModificacion}</td>
-                    <td class="small">${fechaStr}</td>
-                    <td class="small">${horaStr}</td>
-                    <td class="small pe-4">
-                        <span class="badge bg-light text-dark border"><i class="bi bi-person-fill me-1"></i>${resp}</span>
+                    <td data-label="Modificación" class="small text-end text-md-start text-break">
+                        ${descModificacion}
+                    </td>
+                    <td data-label="Fecha" class="small text-end text-md-start">
+                        ${fechaStr}
+                    </td>
+                    <td data-label="Hora" class="small text-end text-md-start">
+                        ${horaStr}
+                    </td>
+                    <td data-label="Responsable" class="small pe-md-4 text-center">
+                        <span class="badge bg-light text-dark border w-md-auto text-start text-md-center">
+                            <i class="bi bi-person-fill me-1"></i>${resp}
+                        </span>
                     </td>
                 </tr>`;
         }).join("");
