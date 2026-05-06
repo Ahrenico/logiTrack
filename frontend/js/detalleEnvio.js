@@ -160,10 +160,14 @@ async function cargarHistorial() {
 
             return `
                 <tr>
-                    <td class="ps-4 small fw-medium text-dark"><i class="bi bi-arrow-right-short text-success"></i> ${eventoTexto}</td>
-                    <td class="small text-muted">${fechaStr}</td>
-                    <td class="small text-muted">${horaStr}</td>
-                    <td class="small text-muted"><i class="bi bi-person-fill"></i> ${reg.usuario?.username || "Sistema"}</td>
+                    <td data-label="Evento" class="ps-md-4 small fw-medium text-dark text-end text-md-start">
+                        <i class="bi bi-arrow-right-short text-success d-none d-md-inline"></i> ${eventoTexto}
+                    </td>
+                    <td data-label="Fecha" class="small text-muted text-end text-md-start">${fechaStr}</td>
+                    <td data-label="Hora" class="small text-muted text-end text-md-start">${horaStr}</td>
+                    <td data-label="Responsable" class="small text-muted text-end text-md-start">
+                        <i class="bi bi-person-fill d-none d-md-inline"></i> ${reg.usuario?.username || "Sistema"}
+                    </td>
                 </tr>`;
         }).join("");
 
@@ -201,7 +205,7 @@ async function editarEnvio() {
         if (!response.ok) throw new Error(await response.text());
 
         await Swal.fire({ icon: "success", title: "Operación actualizada", showConfirmButton: false, timer: 1500 });
-        
+
         // Recarga la página actual para mostrar los datos y el historial actualizados
         window.location.reload();
 

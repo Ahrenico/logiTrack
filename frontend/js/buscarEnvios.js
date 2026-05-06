@@ -80,7 +80,7 @@ async function buscar(pageNumber = 0) {
             return;
         }
 
-        // 4. Dibujar filas directamente (¡Adiós a la lógica de filtrado pesado en JS!)
+        // 4. Dibujar filas
         tbody.innerHTML = envios.map(e => {
             const nombreCliente = e.origen?.empresa?.razon_social || "Sin cliente";
             const pesoTn = e.kg_origen ? (e.kg_origen / 1000).toFixed(1) : "0";
@@ -95,25 +95,33 @@ async function buscar(pageNumber = 0) {
 
             return `
             <tr>
-                <td class="ps-4">
-                    <span class="fw-bold text-success d-block">${e.id_envio}</span>
-                    <small class="text-muted" style="font-size: 0.7rem;">CTG: ${e.tracking_ctg}</small>
+                <td data-label="ID Rastreo" class="ps-md-4">
+                    <div class="text-end text-md-start">
+                        <span class="fw-bold text-success d-block">${e.id_envio}</span>
+                        <small class="text-muted" style="font-size: 0.7rem;">CTG: ${e.tracking_ctg}</small>
+                    </div>
                 </td>
-                <td>
-                    <span class="d-block fw-medium text-dark">${nombreCliente}</span>
-                    <small class="text-muted"><i class="bi bi-geo-alt"></i> ${e.destino?.nombre_lugar || "Destino pendiente"}</small>
+                <td data-label="Empresa Cliente">
+                    <div class="text-end text-md-start">
+                        <span class="d-block fw-medium text-dark">${nombreCliente}</span>
+                        <small class="text-muted"><i class="bi bi-geo-alt"></i> ${e.destino?.nombre_lugar || "Destino pendiente"}</small>
+                    </div>
                 </td>
-                <td>
-                    <span class="d-block fw-medium text-dark">${e.tipo_grano}</span>
-                    <small class="text-muted">${pesoTn} Tn</small>
+                <td data-label="Carga / Grano">
+                    <div class="text-end text-md-start">
+                        <span class="d-block fw-medium text-dark">${e.tipo_grano}</span>
+                        <small class="text-muted">${pesoTn} Tn</small>
+                    </div>
                 </td>
-                <td>
-                    <span class="badge ${getEstadoClass(e.estado_actual)} rounded-pill px-3">
-                        ${estadoFormateado}
-                    </span>
+                <td data-label="Estado">
+                    <div class="text-end text-md-start">
+                        <span class="badge ${getEstadoClass(e.estado_actual)} rounded-pill px-3">
+                            ${estadoFormateado}
+                        </span>
+                    </div>
                 </td>
-                <td class="text-end pe-4">
-                    <a href="./detalleEnvio.html?id=${e.id_envio}" class="btn btn-sm btn-outline-success shadow-sm rounded-3 fw-medium">
+                <td data-label="Acciones" class="text-end pe-md-4">
+                    <a href="./detalleEnvio.html?id=${e.id_envio}" class="btn btn-sm btn-outline-success shadow-sm rounded-3 fw-medium w-100 w-md-auto">
                         <i class="bi bi-eye-fill me-1"></i> Ficha
                     </a>
                 </td>
