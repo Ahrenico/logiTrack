@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,46 +57,36 @@ public class EnvioController {
     // GET para buscar envíos con filtros opcionales por fecha y estado
     @GetMapping("/search")
     public ResponseEntity<?> buscarEnvios(
+            @RequestParam(required = false) String query,
             @RequestParam(required = false) String estado,
             @RequestParam(required = false) String fecha) {
         try {
-            List<Envio> envios;
             LocalDate fechaFiltro = null;
             Estado_Envio estadoFiltro = null;
 
             // Parsear los parámetros
             if (fecha != null && !fecha.isBlank()) {
-                fechaFiltro = LocalDate.parse(fecha);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                fechaFiltro = LocalDate.parse(fecha, formatter);
             }
 
             if (estado != null && !estado.isBlank()) {
                 estadoFiltro = Estado_Envio.valueOf(estado.toUpperCase());
             }
 
-            // Determinar qué búsqueda hacer según los parámetros
-            if (estadoFiltro != null && fechaFiltro != null) {
-                // Búsqueda con ambos filtros
-                envios = envioRepository.buscarPorEstadoYFecha(
-                        estadoFiltro,
-                        fechaFiltro.atStartOfDay(),
-                        fechaFiltro.plusDays(1).atStartOfDay());
-            } else if (estadoFiltro != null) {
-                // Búsqueda solo por estado
-                envios = envioRepository.buscarPorEstado(estadoFiltro);
-            } else if (fechaFiltro != null) {
-                // Búsqueda solo por fecha
-                envios = envioRepository.buscarPorFecha(
-                        fechaFiltro.atStartOfDay(),
-                        fechaFiltro.plusDays(1).atStartOfDay());
-            } else {
-                // Sin filtros, traer todos
-                envios = envioRepository.buscarTodos();
+            LocalDateTime fechaInicio = null;
+            LocalDateTime fechaFin = null;
+            if (fechaFiltro != null) {
+                fechaInicio = fechaFiltro.atStartOfDay();
+                fechaFin = fechaFiltro.plusDays(1).atStartOfDay();
             }
 
+            String termino = (query != null && !query.isBlank()) ? query.trim() : null;
+            List<Envio> envios = envioService.buscarEnviosConFiltros(estadoFiltro, fechaInicio, fechaFin, termino);
             return ResponseEntity.ok(envios);
         } catch (DateTimeParseException e) {
             ErrorResponseDTO error = new ErrorResponseDTO();
-            error.setMessage("Formato de fecha inválido. Use yyyy-MM-dd.");
+            error.setMessage("Formato de fecha inválido. Use dd/MM/yyyy.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         } catch (IllegalArgumentException e) {
             ErrorResponseDTO error = new ErrorResponseDTO();
