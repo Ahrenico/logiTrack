@@ -5,6 +5,7 @@ import com.logitrack.sistema_logistica.dto.EnvioRequestDTO;
 import com.logitrack.sistema_logistica.model.Envio;
 import com.logitrack.sistema_logistica.model.Historial_Estados;
 import com.logitrack.sistema_logistica.model.Usuario;
+import com.logitrack.sistema_logistica.model.enums.Estado_Envio;
 import com.logitrack.sistema_logistica.service.EnvioService;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +51,57 @@ public class EnvioController {
     @GetMapping
     public List<Envio> listarEnvios() {
         return envioRepository.findAll();
+    }
+
+    // GET para buscar envíos con filtros opcionales por fecha y estado
+    @GetMapping("/search")
+    public ResponseEntity<?> buscarEnvios(
+            @RequestParam(required = false) String estado,
+            @RequestParam(required = false) String fecha) {
+        try {
+            List<Envio> envios;
+            LocalDate fechaFiltro = null;
+            Estado_Envio estadoFiltro = null;
+
+            // Parsear los parámetros
+            if (fecha != null && !fecha.isBlank()) {
+                fechaFiltro = LocalDate.parse(fecha);
+            }
+
+            if (estado != null && !estado.isBlank()) {
+                estadoFiltro = Estado_Envio.valueOf(estado.toUpperCase());
+            }
+
+            // Determinar qué búsqueda hacer según los parámetros
+            if (estadoFiltro != null && fechaFiltro != null) {
+                // Búsqueda con ambos filtros
+                envios = envioRepository.buscarPorEstadoYFecha(
+                        estadoFiltro,
+                        fechaFiltro.atStartOfDay(),
+                        fechaFiltro.plusDays(1).atStartOfDay());
+            } else if (estadoFiltro != null) {
+                // Búsqueda solo por estado
+                envios = envioRepository.buscarPorEstado(estadoFiltro);
+            } else if (fechaFiltro != null) {
+                // Búsqueda solo por fecha
+                envios = envioRepository.buscarPorFecha(
+                        fechaFiltro.atStartOfDay(),
+                        fechaFiltro.plusDays(1).atStartOfDay());
+            } else {
+                // Sin filtros, traer todos
+                envios = envioRepository.buscarTodos();
+            }
+
+            return ResponseEntity.ok(envios);
+        } catch (DateTimeParseException e) {
+            ErrorResponseDTO error = new ErrorResponseDTO();
+            error.setMessage("Formato de fecha inválido. Use yyyy-MM-dd.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        } catch (IllegalArgumentException e) {
+            ErrorResponseDTO error = new ErrorResponseDTO();
+            error.setMessage("Estado inválido. Use uno de los valores permitidos: PENDIENTE, EN_TRANSITO, ENTREGADO, CANCELADO");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
     }
 
     // GET para listar, en este caso los estados para el supervisor
