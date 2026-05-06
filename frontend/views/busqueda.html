@@ -15,38 +15,49 @@
 <body class="d-flex flex-column min-vh-100 bg-light">
 
     <header>
-        <nav class="navbar py-3 shadow-sm bg-agro-gradient">
-            <div class="container">
-                <a class="navbar-brand text-light fw-bold fs-4 d-flex align-items-center gap-2" href="#">
-                    <img src="../img/logo-white.png" alt="Logo" height="50">
-                    <span class="fs-3 fw-bold tracking-tight d-none d-sm-block">LogiTrack Agro</span>
+        <nav class="navbar py-2 py-md-3 shadow-sm bg-agro-gradient">
+            <div class="container d-flex flex-wrap align-items-center justify-content-between">
+
+                <a class="navbar-brand text-light fw-bold d-flex align-items-center gap-2 mb-2 mb-sm-0" href="#">
+                    <img src="../img/logo-white.png" alt="Logo" height="40" class="d-md-none">
+                    <img src="../img/logo-white.png" alt="Logo" height="50" class="d-none d-md-block">
+                    <span class="fs-4 fs-md-3 fw-bold tracking-tight d-none d-sm-inline">LogiTrack Agro</span>
                 </a>
 
-                <div class="d-flex align-items-center gap-3 gap-md-4">
-                    <div class="text-light text-end d-none d-sm-block">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="text-light text-end d-none d-md-block">
                         <span class="fw-bold" id="nombreUsuario">Cargando...</span>
                         <small class="opacity-75 d-block lh-1 text-capitalize" style="font-size: 0.75rem;"
                             id="rolUsuario">Cargando...</small>
                     </div>
-                    <button class="btn btn-outline-warning btn-sm fw-semibold px-3 py-2" id="btnCerrarSesion">
-                        <i class="bi bi-box-arrow-right me-1"></i> Cerrar sesión
+                    <button
+                        class="btn btn-outline-warning btn-sm fw-semibold px-2 px-md-3 py-1 py-md-2 d-flex align-items-center"
+                        id="btnCerrarSesion">
+                        <i class="bi bi-box-arrow-right me-2"></i>
+                        <span>Cerrar sesión</span>
                     </button>
                 </div>
+
+                <div class="w-100 d-md-none mt-2 text-light text-center border-top border-light border-opacity-10 pt-2">
+                    <small class="fw-bold" id="nombreUsuarioMovil">Cargando...</small> -
+                    <small class="opacity-75 text-capitalize" id="rolUsuarioMovil">Cargando...</small>
+                </div>
+
             </div>
         </nav>
     </header>
 
-    <main class="d-flex flex-grow-1 py-5">
+    <main class="d-flex flex-grow-1 py-4 py-md-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 col-lg-10 col-xl-9">
 
                     <a href="./menu.html"
-                        class="text-decoration-none text-success fw-semibold mb-4 d-inline-flex align-items-center gap-2">
+                        class="text-decoration-none text-success fw-semibold mb-3 mb-md-4 d-inline-flex align-items-center gap-2">
                         <i class="bi bi-arrow-left-circle fs-5"></i> Volver al Panel
                     </a>
 
-                    <div class="card border-0 shadow-sm rounded-4 mt-3 mb-5">
+                    <div class="card border-0 shadow-sm rounded-4 mt-2 mt-md-3 mb-4 mb-md-5">
                         <div class="card-body p-4 p-md-5">
                             <div class="d-flex align-items-center gap-3 mb-1">
                                 <div class="bg-primary bg-opacity-10 text-primary p-2 rounded-3">
@@ -54,53 +65,11 @@
                                 </div>
                                 <h4 class="fw-bold mb-0 text-dark">Rastreo de Envío</h4>
                             </div>
-                            <p class="text-muted small mb-4 ms-5">Busca por ID Interno, Código CTG, Empresa de
-                                Origen/Destino o Tipo de Grano.</p>
+                            <!-- Corrección de márgenes responsivos -->
+                            <p class="text-muted small mb-4 ms-md-5 ps-md-2">Busca por ID Interno, Código CTG, Empresa
+                                de Origen/Destino o Tipo de Grano.</p>
 
                             <form>
-                                <!-- <div class="row g-3 align-items-end ms-md-4">
-                                    <div class="col-12 col-md-12">
-                                        <label for="searchInput"
-                                            class="form-label small fw-bold text-uppercase text-muted">Término de
-                                            búsqueda</label>
-                                        <div
-                                            class="input-group shadow-sm rounded-3 mb-2 border border-success border-opacity-25">
-                                            <span class="input-group-text bg-white border-0"><i
-                                                    class="bi bi-search text-success"></i></span>
-
-                                            <input type="text" id="searchInput"
-                                                class="form-control bg-white border-0 ps-0 focus-ring focus-ring-success py-2"
-                                                placeholder="Ej: LT-001, 89456123, Los Grobo, Rosario, Soja..."
-                                                autocomplete="off">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <label class="form-label small fw-bold text-uppercase text-muted">Estado
-                                            Operativo</label>
-                                        <select
-                                            class="form-select bg-light border-0 shadow-sm focus-ring focus-ring-success py-2"
-                                            id="stateSelect">
-                                            <option selected>Cualquier Estado</option>
-                                            <option>Pendiente</option>
-                                            <option>En tránsito</option>
-                                            <option>En punto de recolección</option>
-                                            <option>En reparto</option>
-                                            <option>Entregado</option>
-                                            <option>Cancelado</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-12 col-md-6 d-flex gap-2">
-                                        <button type="reset"
-                                            class="btn btn-light border-0 shadow-sm py-2 px-3 text-muted w-50"
-                                            title="Limpiar filtros">
-                                            <i class="bi bi-eraser-fill"></i>
-                                        </button>
-                                        <button type="submit" class="btn btn-success shadow-sm py-2 w-100 fw-bold"
-                                            style="background: linear-gradient(45deg, #1b4332, #2d6a4f); border: none;">
-                                            Buscar
-                                        </button>
-                                    </div>
-                                </div> -->
                                 <div class="row g-3 align-items-end ms-md-4">
                                     <!-- Fila 1: Buscador de texto -->
                                     <div class="col-12 col-md-12">
@@ -152,11 +121,11 @@
                                     <!-- Fila 2, Columna 3: Botones -->
                                     <div class="col-12 col-md-4 d-flex gap-2">
                                         <button type="reset"
-                                            class="btn btn-light border-0 shadow-sm py-2 px-3 text-muted w-25"
+                                            class="btn btn-light border-0 shadow-sm py-2 px-3 text-muted flex-shrink-0"
                                             title="Limpiar filtros">
                                             <i class="bi bi-eraser-fill"></i>
                                         </button>
-                                        <button type="submit" class="btn btn-success shadow-sm py-2 w-75 fw-bold"
+                                        <button type="submit" class="btn btn-success shadow-sm py-2 w-100 fw-bold"
                                             style="background: linear-gradient(45deg, #1b4332, #2d6a4f); border: none;">
                                             Buscar
                                         </button>
@@ -168,12 +137,12 @@
 
                     <div class="mt-2">
                         <div class="d-flex align-items-center justify-content-between mb-3 px-2">
-                            <h5 class="fw-bold text-dark mb-0">Resultados de la consulta</h5>
+                            <h5 class="fw-bold text-dark mb-0 fs-6 fs-md-5">Resultados de la consulta</h5>
                         </div>
 
-                        <div class="card border-0 shadow-sm rounded-4 p-5 text-center" id="emptyTable">
+                        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 text-center" id="emptyTable">
                             <div class="py-4">
-                                <i class="bi bi-truck text-muted opacity-25" style="font-size: 4rem;"></i>
+                                <i class="bi bi-truck text-muted opacity-25" style="font-size: 3.5rem;"></i>
                                 <h6 class="fw-bold text-dark mt-3">Panel de Monitoreo</h6>
                                 <p class="text-muted mb-0 small">Ingresa los parámetros arriba para localizar un envío.
                                 </p>
@@ -193,6 +162,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="border-top-0">
+                                        <!-- Renderizado por JS -->
                                     </tbody>
                                 </table>
                             </div>
@@ -221,8 +191,7 @@
                             <!-- === FIN CONTROLES DE PAGINACIÓN === -->
                         </div>
 
-
-                        <div class="card border-0 shadow-sm rounded-4 p-5 text-center d-none bg-danger bg-opacity-10"
+                        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 text-center d-none bg-danger bg-opacity-10"
                             id="noResultsTable">
                             <div class="py-4">
                                 <i class="bi bi-exclamation-triangle-fill text-danger opacity-75"
@@ -241,9 +210,9 @@
 
     <footer class="mt-auto bg-agro-gradient text-light py-4">
         <div class="container text-center">
-            <p class="mb-1 opacity-75 small fw-light">© 2026 LogiTrack Agro - Sistema Federal de Gestión de Logística y
-                Distribución.</p>
-            <p class="mb-0 opacity-50 small fw-light">Todos los derechos reservados.</p>
+            <p class="mb-1 opacity-75 small fw-light">© 2026 LogiTrack Agro.</p>
+            <p class="mb-0 opacity-50 small fw-light" style="font-size: 0.7rem;">Sistema Federal de Gestión de Logística
+                y Distribución de Granos y Semillas.</p>
         </div>
     </footer>
 
