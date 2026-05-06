@@ -2,8 +2,8 @@ package com.logitrack.sistema_logistica.controller;
 
 import com.logitrack.sistema_logistica.dto.ErrorResponseDTO;
 import com.logitrack.sistema_logistica.dto.EnvioRequestDTO;
+import com.logitrack.sistema_logistica.dto.HistorialResponseDTO;
 import com.logitrack.sistema_logistica.model.Envio;
-import com.logitrack.sistema_logistica.model.Historial_Estados;
 import com.logitrack.sistema_logistica.model.Usuario;
 import com.logitrack.sistema_logistica.model.enums.Estado_Envio;
 import com.logitrack.sistema_logistica.service.EnvioService;
@@ -24,13 +24,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.logitrack.sistema_logistica.repository.EnvioRepository;
-import com.logitrack.sistema_logistica.repository.Historial_EstadosRepository;
 import com.logitrack.sistema_logistica.repository.UsuarioRepository;
 import org.springframework.security.core.Authentication;
 
@@ -101,19 +99,22 @@ public class EnvioController {
         }
     }
 
-    // GET para listar, en este caso los estados para el supervisor
+    // GET para obtener el historial de un envío por su identificador
     @GetMapping("/{idEnvio}/historial")
-    public ResponseEntity<Object> consultarHistorial(@PathVariable String idEnvio) {
+    public ResponseEntity<?> consultarHistorial(@PathVariable String idEnvio) {
         try {
-            List<Historial_Estados> historial = envioService.obtenerHistorialPorEnvio(idEnvio);
+            // Llamar al servicio que valida el envío y devuelve los eventos ya transformados a DTO
+            List<HistorialResponseDTO> historial = envioService.obtenerHistorialPorEnvio(idEnvio);
             return ResponseEntity.ok(historial);
-        } catch (Exception e) {
-            // 1. Creamos el objeto vacío
+        } catch (RuntimeException e) {
+            // Responder con 404 cuando el envío no exista
             ErrorResponseDTO error = new ErrorResponseDTO();
-            // 2. Le cargamos el mensaje con el setter
+            error.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        } catch (Exception e) {
+            // Responder con 500 para errores inesperados
+            ErrorResponseDTO error = new ErrorResponseDTO();
             error.setMessage("Error al obtener el historial: " + e.getMessage());
-
-            // 3. Lo enviamos en el body
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
@@ -247,68 +248,5 @@ public class EnvioController {
     }
 
 
-    /* GEMINI:
-     *El peligro del FetchType.LAZY (Error de Jackson)
-     * Si observamos tu clase Historial_Estados.java, vemos esto:
-     * 
-     * 
-     * @ManyToOne(fetch = FetchType.LAZY)
-     * @JoinColumn(name = "id_envio", referencedColumnName = "id_envio")
-     * private Envio envio;
-     * 
-     * @ManyToOne(fetch = FetchType.LAZY)
-     * @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
-     * private Usuario usuario;
-     * 
-     * 
-     * En Spring Boot, cuando intentamos devolver por la API un objeto que tiene
-     * relaciones marcadas como LAZY directamente a JSON, Spring lanza una de las
-     * excepciones más famosas y temidas: LazyInitializationException (o se queda en
-     * un bucle infinito de serialización de JSON).
-     * 
-     * Para evitar que tu aplicación se rompa, la mejor práctica es no devolver la
-     * entidad Historial_Estados directamente, sino devolver un objeto simplificado
-     * (DTO).
-     */
-
-    // 1. DTO Interno para evitar problemas de FetchType.LAZY
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class HistorialResponseDTO {
-        private Integer idReg;
-        private String idRastreo;
-        private String estadoAnterior;
-        private String estadoNuevo;
-        private LocalDateTime fechaHora;
-        private String responsable;
-    }
-
-    @Autowired
-    private Historial_EstadosRepository historialEstadosRepository;
-
-    // 2. Endpoint Global de Auditoría
-    @GetMapping("/historial-completo")
-    public ResponseEntity<List<HistorialResponseDTO>> obtenerHistorialCompleto() {
-        // Obtenemos todos los registros ordenados por fecha descendente (más reciente
-        // primero)
-        List<Historial_Estados> listaCompleta = historialEstadosRepository.findAll();
-
-        // Mapeamos a nuestro DTO para enviar solo lo necesario y evitar errores de JSON
-        List<HistorialResponseDTO> respuesta = listaCompleta.stream()
-                .map(h -> HistorialResponseDTO.builder()
-                        .idReg(h.getId_historial())
-                        .idRastreo(h.getEnvio().getId_envio())
-                        .estadoAnterior(h.getEstado_anterior() != null ? h.getEstado_anterior().name() : "INICIAL")
-                        .estadoNuevo(h.getEstado_nuevo().name())
-                        .fechaHora(h.getFecha_hora())
-                        .responsable(h.getUsuario().getUsername())
-                        .build())
-                .sorted((a, b) -> b.getFechaHora().compareTo(a.getFechaHora())) // Ordenar por fecha
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(respuesta);
-    }
     ////////////////////////////////////////////////////////////////////////////////////////////////
 }

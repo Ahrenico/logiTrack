@@ -1,6 +1,7 @@
 package com.logitrack.sistema_logistica.service;
 
 import com.logitrack.sistema_logistica.dto.EnvioRequestDTO;
+import com.logitrack.sistema_logistica.dto.HistorialResponseDTO;
 import com.logitrack.sistema_logistica.model.*;
 import com.logitrack.sistema_logistica.model.enums.Estado_Envio;
 import com.logitrack.sistema_logistica.repository.*;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EnvioService {
@@ -87,10 +89,26 @@ public class EnvioService {
         return envioRepository.findAll(spec, pageable);
     }
 
-    public List<Historial_Estados> obtenerHistorialPorEnvio(String idEnvio) {
-    return historialRepository.buscarHistorialPorEnvio(idEnvio);
-}
- @Transactional // Garantiza que si falla el historial, no se guarde el envío a medias
+    /**
+     * Obtiene el historial de eventos de un envío por su identificador.
+     * Primero valida que el envío exista y luego devuelve los registros de historial
+     * transformados a DTO para exponer solo los campos necesarios.
+     */
+    @Transactional(readOnly = true)
+    public List<HistorialResponseDTO> obtenerHistorialPorEnvio(String idEnvio) {
+        // Validar existencia del envío antes de consultar el historial
+        if (!envioRepository.existsById(idEnvio)) {
+            throw new RuntimeException("No se encontró el envío con id_envio: " + idEnvio);
+        }
+
+        // Buscar los registros de historial ordenados por fecha descendente
+        return historialRepository.buscarHistorialPorEnvio(idEnvio)
+                .stream()
+                .map(HistorialResponseDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional // Garantiza que si falla el historial, no se guarde el envío a medias
         public Envio actualizarEstadoYPrioridad(String idEnvio, String nuevoEstadoStr, String nuevaPrioridad,
                         Usuario usuarioModificador) {
 
