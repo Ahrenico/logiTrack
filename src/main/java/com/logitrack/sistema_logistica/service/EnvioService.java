@@ -5,6 +5,8 @@ import com.logitrack.sistema_logistica.model.*;
 import com.logitrack.sistema_logistica.model.enums.Estado_Envio;
 import com.logitrack.sistema_logistica.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,11 +80,11 @@ public class EnvioService {
             .orElseThrow(() -> new RuntimeException("No se encontró el envío con el id_envio: " + id_envio));
     }
 
-    public List<Envio> buscarEnviosConFiltros(Estado_Envio estado, LocalDateTime fechaInicio, LocalDateTime fechaFin, String termino) {
+    public Page<Envio> buscarEnviosConFiltros(Estado_Envio estado, LocalDateTime fechaInicio, LocalDateTime fechaFin, String termino, Pageable pageable) {
         Specification<Envio> spec = Specification.where(EnvioSpecifications.tieneEstado(estado))
                 .and(EnvioSpecifications.fechaCreacionEntre(fechaInicio, fechaFin))
                 .and(EnvioSpecifications.contieneTermino(termino));
-        return envioRepository.findAll(spec);
+        return envioRepository.findAll(spec, pageable);
     }
 
     public List<Historial_Estados> obtenerHistorialPorEnvio(String idEnvio) {

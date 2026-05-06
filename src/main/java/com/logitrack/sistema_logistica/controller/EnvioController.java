@@ -25,6 +25,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.logitrack.sistema_logistica.repository.EnvioRepository;
 import com.logitrack.sistema_logistica.repository.Historial_EstadosRepository;
@@ -54,12 +57,14 @@ public class EnvioController {
         return envioRepository.findAll();
     }
 
-    // GET para buscar envíos con filtros opcionales por fecha y estado
+    // GET para buscar envíos con filtros opcionales por fecha, estado y paginación
     @GetMapping("/search")
     public ResponseEntity<?> buscarEnvios(
             @RequestParam(required = false) String query,
             @RequestParam(required = false) String estado,
-            @RequestParam(required = false) String fecha) {
+            @RequestParam(required = false) String fecha,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         try {
             LocalDate fechaFiltro = null;
             Estado_Envio estadoFiltro = null;
@@ -82,7 +87,8 @@ public class EnvioController {
             }
 
             String termino = (query != null && !query.isBlank()) ? query.trim() : null;
-            List<Envio> envios = envioService.buscarEnviosConFiltros(estadoFiltro, fechaInicio, fechaFin, termino);
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Envio> envios = envioService.buscarEnviosConFiltros(estadoFiltro, fechaInicio, fechaFin, termino, pageable);
             return ResponseEntity.ok(envios);
         } catch (DateTimeParseException e) {
             ErrorResponseDTO error = new ErrorResponseDTO();
