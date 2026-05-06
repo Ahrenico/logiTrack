@@ -8,15 +8,9 @@ import com.logitrack.sistema_logistica.model.Usuario;
 import com.logitrack.sistema_logistica.model.enums.Estado_Envio;
 import com.logitrack.sistema_logistica.service.EnvioService;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
